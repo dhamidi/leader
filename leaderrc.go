@@ -82,12 +82,12 @@ func parseKeyBindings(rc *LeaderRCJSON, state *MenuState) error {
 		result.Keys[keyRune] = entry
 	}
 
-	if state.KeyMap == nil {
-		state.KeyMap = result
+	if state.Root == nil {
+		state.Root = result
 		return nil
 	}
 
-	return state.KeyMap.Merge(result)
+	return state.Root.Merge(result)
 }
 
 func parseKeyMap(keyMap map[string]interface{}, path string, state *MenuState) (*KeyMap, error) {

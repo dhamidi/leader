@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"strings"
 )
 
 type MenuState struct {
@@ -11,8 +12,37 @@ type MenuState struct {
 	Err             io.Writer
 	In              io.Reader
 	LinesDrawn      int
-	KeyMap          *KeyMap
+	Root            *KeyMap
+	Path            []*KeyMap
 	BuiltinCommands map[string]CommandFn
+}
+
+func (m *MenuState) CurrentPath() string {
+	names := []string{}
+	for _, keyMap := range m.Path {
+		names = append(names, keyMap.Name)
+	}
+
+	return strings.Join(names, " > ")
+}
+func (m *MenuState) PopHandler() {
+	if len(m.Path) == 0 {
+		return
+	}
+
+	m.Path = m.Path[:len(m.Path)-1]
+}
+func (m *MenuState) PushHandler(keyMap *KeyMap) {
+	if m.CurrentHandler() == keyMap {
+		return
+	}
+	m.Path = append(m.Path, keyMap)
+}
+func (m *MenuState) CurrentHandler() *KeyMap {
+	if len(m.Path) == 0 {
+		return m.Root
+	}
+	return m.Path[len(m.Path)-1]
 }
 
 func (m *MenuState) DefineBuiltinCommand(name string, fn CommandFn) {
@@ -51,9 +81,9 @@ type DisplayMenu struct {
 func (cmd *DisplayMenu) Execute() {
 	clear := &ClearMenu{State: cmd.State}
 	clear.Execute()
-	fmt.Fprintf(cmd.State.Out, "\033[K> %s\n\r", cmd.State.KeyMap.Name)
+	fmt.Fprintf(cmd.State.Out, "\033[K> %s\n\r", cmd.State.CurrentPath())
 	cmd.State.LinesDrawn += 1
-	for key, value := range cmd.State.KeyMap.Keys {
+	for key, value := range cmd.State.CurrentHandler().Keys {
 		cmd.State.LinesDrawn++
 		if child, isKeyMap := value.(*KeyMap); isKeyMap {
 			fmt.Fprintf(cmd.State.Out, "[%c] %s\n\r", key, child.Name)
@@ -70,8 +100,9 @@ type SelectMenuItem struct {
 }
 
 func (cmd *SelectMenuItem) Execute() {
-	nextHandler, command := cmd.State.KeyMap.HandleKey(cmd.Key)
-	if nextHandler == cmd.State.KeyMap && command == nil {
+	currentHandler := cmd.State.CurrentHandler()
+	nextHandler, command := currentHandler.HandleKey(cmd.Key)
+	if nextHandler == cmd.State.Root && command == nil {
 		return
 	}
 	if command != nil {
@@ -79,6 +110,14 @@ func (cmd *SelectMenuItem) Execute() {
 		command.Execute()
 		cmd.State.Done = true
 	} else {
-		cmd.State.KeyMap = nextHandler
+		cmd.State.PushHandler(nextHandler)
 	}
+}
+
+type GoBack struct {
+	State *MenuState
+}
+
+func (cmd *GoBack) Execute() {
+	cmd.State.PopHandler()
 }

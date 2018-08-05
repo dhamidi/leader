@@ -1,4 +1,5 @@
 - [x] Support multiple configuration files (check everything upwards from $PWD until the home directory is hit.  Always parse `~/.leaderrc`)
 - [ ] Tests, because prototyping is basically done now and I don't want to throw away the prototype (it works too well)
-- [ ] Allow navigation to a previous menu using backspace, up, ctrl-b and left
+- [x] Allow navigation to a previous menu using backspace, up, ctrl-b and left
+- [ ] Sort menu entries alphabetically
 - [ ] Integration with common build tools to autogenerate parts of `.leaderrc`

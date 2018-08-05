@@ -56,6 +56,11 @@ func main() {
 		if key == terminal.KeyCtrlC {
 			break
 		}
+		if key == terminal.KeyCtrlB || key == terminal.KeyUp || key == terminal.KeyLeft || key == terminal.KeyBackspace {
+			goBack := &GoBack{State: menuState}
+			goBack.Execute()
+			continue
+		}
 
 		selectItem := &SelectMenuItem{
 			State:         menuState,

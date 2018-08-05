@@ -8,6 +8,18 @@ For example, using Leader you could map pressing `g` followed by `c` to running 
 
 - generates a keymap from your Makefile, Rakefile and package.json
 
+# Key bindings
+
+The following key bindings are processed by `leader` itself and cannot be remapped:
+
+| Key         | Function                     |
+| ---         | --------                     |
+| `Ctrl+C`    | Exit `leader`                |
+| `Ctrl+B`    | Go back to the previous menu |
+| `Up`        | Go back to the previous menu |
+| `Left`      | Go back to the previous menu |
+| `Backspace` | Go back to the previous menu |
+
 # Configuration
 
 Here is an example configuration file, containing shortcuts useful when developing with Golang:
