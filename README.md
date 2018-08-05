@@ -8,6 +8,42 @@ For example, using Leader you could map pressing `g` followed by `c` to running 
 
 - generates a keymap from your Makefile, Rakefile and package.json
 
+# Configuration
+
+Here is an example configuration file, containing shortcuts useful when developing with Golang:
+
+```
+{
+  "bindings": {
+    "q": ["<quit>"],
+    "g": {
+      "name": "go",
+      "keys": {
+        "b": ["go", "build", "."],
+        "t": {
+          "name": "test",
+          "keys": {
+            ".": ["go", "test", "."],
+            "a": ["go", "test", "./..."]
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+This produces the following key bindings:
+
+- `q` is bound to the builtin command `quit`.  The `<` and `>` mark the command as a builtin command.
+- `g b` is bound to running `go build .`
+- `g t .` is bound to running `go test .`
+- `g t a` is bound to running `go test ./...`
+
+As this example shows, key maps can be nested to arbitrary depth.
+
+A keymap's `name` is used to as a label to indicate which keymap the user is currently in when running `leader`.
+
 # BASH integration
 
 To trigger `leader` when pressing `\` in bash, run the following command and add it to your bash initialization file:
