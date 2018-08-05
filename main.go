@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/user"
 
 	"github.com/Nerdmaster/terminal"
 )
@@ -10,10 +11,31 @@ import (
 func main() {
 	menuState := &MenuState{Out: os.Stdout, Err: os.Stderr, In: os.Stdin}
 
-	if err := LoadLeaderRC(".leaderrc", menuState); err != nil {
-		fmt.Printf("Error loading .leaderrc: %s\n", err)
+	currentUser, err := user.Current()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error loading current user: %s\n", err)
 		return
 	}
+	currentDirectory, err := os.Getwd()
+	if err != nil {
+		currentDirectory = os.Getenv("PWD")
+	}
+	loadConfig := &ReloadConfig{
+		Home:      currentUser.HomeDir,
+		StartFrom: currentDirectory,
+		State:     menuState,
+	}
+	menuState.DefineBuiltinCommand("quit", NewQuitCommand)
+	menuState.DefineBuiltinCommand("reload", func(*MenuState) (Command, error) {
+		return &ReloadConfig{
+			Home:      currentUser.HomeDir,
+			StartFrom: currentDirectory,
+			State:     menuState,
+			Verbose:   true,
+		}, nil
+	})
+
+	loadConfig.Execute()
 	oldState, err := terminal.MakeRaw(0)
 	if err != nil {
 		fmt.Printf("Error putting terminal into raw mode: %s\n", err)

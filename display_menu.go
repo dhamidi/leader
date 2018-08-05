@@ -6,20 +6,28 @@ import (
 )
 
 type MenuState struct {
-	Done       bool
-	Out        io.Writer
-	Err        io.Writer
-	In         io.Reader
-	LinesDrawn int
-	KeyMap     *KeyMap
+	Done            bool
+	Out             io.Writer
+	Err             io.Writer
+	In              io.Reader
+	LinesDrawn      int
+	KeyMap          *KeyMap
+	BuiltinCommands map[string]CommandFn
+}
+
+func (m *MenuState) DefineBuiltinCommand(name string, fn CommandFn) {
+	if m.BuiltinCommands == nil {
+		m.BuiltinCommands = map[string]CommandFn{}
+	}
+	m.BuiltinCommands[name] = fn
 }
 
 type QuitCommand struct {
 	State *MenuState
 }
 
-func NewQuitCommand(state *MenuState) Command { return &QuitCommand{State: state} }
-func (cmd *QuitCommand) String() string       { return "quit" }
+func NewQuitCommand(state *MenuState) (Command, error) { return &QuitCommand{State: state}, nil }
+func (cmd *QuitCommand) String() string                { return "quit" }
 
 func (cmd *QuitCommand) Execute() {
 	cmd.State.Done = true

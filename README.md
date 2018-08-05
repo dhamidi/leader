@@ -44,6 +44,12 @@ As this example shows, key maps can be nested to arbitrary depth.
 
 A keymap's `name` is used to as a label to indicate which keymap the user is currently in when running `leader`.
 
+## Load order
+
+Leader tries to load a file called `.leaderrc` from your current working directory.  After trying to load that file it checks the parent directory for a `.leaderrc`, then that directory's parent directory etc until it has tried loading `$HOME/.leaderrc`.
+
+The closer a file is to your working directory, the more important keybindings in that file are.  For example, binding `g b` to `go build .` in `~/.leaderrc` and to `gulp build` in `$HOME/projects/project-using-gulp` will make `leader` prefer running `gulp build` when in your frontend project's directory and `go build` elsewhere.
+
 # BASH integration
 
 To trigger `leader` when pressing `\` in bash, run the following command and add it to your bash initialization file:

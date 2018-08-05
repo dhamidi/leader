@@ -1,9 +1,11 @@
 package main
 
+import "fmt"
+
 type Command interface {
 	Execute()
 }
-type CommandFn func(*MenuState) Command
+type CommandFn func(*MenuState) (Command, error)
 
 type KeyMap struct {
 	Name string
@@ -23,4 +25,30 @@ func (km *KeyMap) HandleKey(key rune) (*KeyMap, Command) {
 	}
 
 	return keyMap, nil
+}
+
+func (km *KeyMap) Merge(other *KeyMap) error {
+	for key, entry := range other.Keys {
+		if km.Keys[key] == nil {
+			km.Keys[key] = entry
+			continue
+		}
+		if entry == nil {
+			continue
+		}
+
+		entryAsKeyMap, entryIsKeyMap := entry.(*KeyMap)
+		thisEntryAsKeyMap, thisEntryIsKeyMap := km.Keys[key].(*KeyMap)
+		if entryIsKeyMap && thisEntryIsKeyMap {
+			thisEntryAsKeyMap.Merge(entryAsKeyMap)
+			continue
+		}
+		if thisEntryIsKeyMap && !entryIsKeyMap || !thisEntryIsKeyMap && entryIsKeyMap {
+			return fmt.Errorf("cannot merge %#v into %#v\n", entry, km.Keys[key])
+		}
+
+		km.Keys[key] = entry
+	}
+
+	return nil
 }

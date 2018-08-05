@@ -1,13 +1,59 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 )
+
+type ReloadConfig struct {
+	State     *MenuState
+	Home      string
+	StartFrom string
+	Verbose   bool
+}
+
+func (cmd *ReloadConfig) String() string { return "reload config" }
+
+func (cmd *ReloadConfig) Execute() {
+	directory := cmd.StartFrom
+	filesToLoad := []string{}
+	for {
+		filename := filepath.Join(directory, ".leaderrc")
+		directory = filepath.Dir(directory)
+		filesToLoad = append(filesToLoad, filename)
+		if len(directory) < len(cmd.Home) {
+			break
+		}
+	}
+
+	for i := len(filesToLoad); i > 0; i-- {
+		filename := filesToLoad[i-1]
+		err := LoadLeaderRC(filename, cmd.State)
+		if err != nil && !os.IsNotExist(err) {
+			fmt.Fprintf(cmd.State.Err, "Error loading rc file: %s\n", err)
+			continue
+		}
+		if cmd.Verbose && err == nil {
+			fmt.Printf("Loaded %s\n", filename)
+		}
+	}
+}
 
 type LeaderRCJSON struct {
 	Bindings map[string]interface{}
+}
+
+func LoadLeaderRCString(rc string, state *MenuState) error {
+	src := bytes.NewBufferString(rc)
+	rawData := &LeaderRCJSON{}
+	if err := json.NewDecoder(src).Decode(rawData); err != nil {
+		return err
+	}
+
+	return parseKeyBindings(rawData, state)
 }
 
 func LoadLeaderRC(filename string, state *MenuState) error {
@@ -27,16 +73,21 @@ func LoadLeaderRC(filename string, state *MenuState) error {
 
 func parseKeyBindings(rc *LeaderRCJSON, state *MenuState) error {
 	result := &KeyMap{Name: "global", Keys: map[rune]interface{}{}}
+
 	for key, keyMapOrCommand := range rc.Bindings {
-		keyRune, entry, err := parseKeyBinding(key, keyMapOrCommand, ".bindings", state)
+		keyRune, entry, err := parseKeyBinding(key, keyMapOrCommand, "", state)
 		if err != nil {
 			return err
 		}
 		result.Keys[keyRune] = entry
 	}
 
-	state.KeyMap = result
-	return nil
+	if state.KeyMap == nil {
+		state.KeyMap = result
+		return nil
+	}
+
+	return state.KeyMap.Merge(result)
 }
 
 func parseKeyMap(keyMap map[string]interface{}, path string, state *MenuState) (*KeyMap, error) {
@@ -51,7 +102,7 @@ func parseKeyMap(keyMap map[string]interface{}, path string, state *MenuState) (
 	result := &KeyMap{Name: name, Keys: map[rune]interface{}{}}
 	keys, isObject := keyMap["keys"].(map[string]interface{})
 	if !isObject {
-		return nil, fmt.Errorf("%s.keys needs to be an object", path)
+		return nil, fmt.Errorf("%s needs to be an object", path)
 	}
 	path = fmt.Sprintf("%s.keys", path)
 	for key, keyMapOrCommand := range keys {
@@ -75,14 +126,18 @@ func parseKeyBinding(key string, keyMapOrCommand interface{}, path string, state
 	if isCommand {
 		commandFn, err := parseCommand(asCommand)
 		if err != nil {
-			return keyRune, nil, fmt.Errorf("%s.%s: %s", path, key, err)
+			return keyRune, nil, fmt.Errorf("%s.%s%s", path, key, err)
 		}
-		return keyRune, commandFn(state), nil
+		command, err := commandFn(state)
+		return keyRune, command, err
 	}
 
 	if isKeyMap {
 		keyMap, err := parseKeyMap(asKeyMap, path, state)
-		return keyRune, keyMap, err
+		if err != nil {
+			return keyRune, nil, fmt.Errorf("%s.%s%s", path, key, err)
+		}
+		return keyRune, keyMap, nil
 	}
 
 	return ' ', nil, fmt.Errorf("%s.%s: %#v not a valid binding", path, key, keyMapOrCommand)
@@ -106,12 +161,12 @@ func parseCommand(parts []interface{}) (CommandFn, error) {
 		}
 	}
 
-	return func(state *MenuState) Command {
+	return func(state *MenuState) (Command, error) {
 		result := &ShellCommand{
 			Path: shellCommandPath,
 			Args: shellCommandArgs,
 		}
-		return result.RedirectTo(state.Out, state.Err).InputFrom(state.In)
+		return result.RedirectTo(state.Out, state.Err).InputFrom(state.In), nil
 	}, nil
 }
 
@@ -130,10 +185,11 @@ func parseBuiltinCommand(parts []interface{}) (CommandFn, error) {
 	}
 
 	commandID := asStrings[0][1 : len(asStrings[0])-1]
-	switch commandID {
-	case "quit":
-		return NewQuitCommand, nil
-	default:
-		return nil, fmt.Errorf("unknown builtin command: %s", commandID)
-	}
+	return func(state *MenuState) (Command, error) {
+		commandFn := state.BuiltinCommands[commandID]
+		if commandFn == nil {
+			return nil, fmt.Errorf("unknown builtin command: %s", commandID)
+		}
+		return commandFn(state)
+	}, nil
 }
