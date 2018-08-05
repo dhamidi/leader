@@ -1,29 +1,13 @@
 package main
 
-import (
-	"bytes"
-	"fmt"
-)
-
 type Command interface {
 	Execute()
 }
+type CommandFn func(*MenuState) Command
 
 type KeyMap struct {
 	Name string
 	Keys map[rune]interface{}
-}
-
-func (km *KeyMap) String() string {
-	out := bytes.NewBufferString("")
-	for key, value := range km.Keys {
-		if child, isKeyMap := value.(*KeyMap); isKeyMap {
-			fmt.Fprintf(out, "[%c] %s\n\r", key, child.Name)
-			continue
-		}
-		fmt.Fprintf(out, "[%c] %s\n\r", key, value)
-	}
-	return out.String()
 }
 
 func (km *KeyMap) HandleKey(key rune) (*KeyMap, Command) {

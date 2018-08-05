@@ -65,6 +65,16 @@ var keyText = map[rune]string{
 	terminal.KeyF12:          "F12",
 }
 
+func keyFromString(keyDescription string) rune {
+	for key, description := range keyText {
+		if description == keyDescription {
+			return key
+		}
+	}
+
+	return ([]rune(keyDescription))[0]
+}
+
 func keyToString(key rune) string {
 	text, found := keyText[key]
 	if found {

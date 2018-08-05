@@ -1,0 +1,18 @@
+{
+  "bindings": {
+    "q": ["<quit>"],
+    "g": {
+      "name": "go",
+      "keys": {
+        "b": ["go", "build", "."],
+        "t": {
+          "name": "test",
+          "keys": {
+            ".": ["go", "test", "."],
+            "a": ["go", "test", "./..."]
+          }
+        }
+      }
+    }
+  }
+}

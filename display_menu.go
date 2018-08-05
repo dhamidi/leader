@@ -6,9 +6,23 @@ import (
 )
 
 type MenuState struct {
+	Done       bool
 	Out        io.Writer
+	Err        io.Writer
+	In         io.Reader
 	LinesDrawn int
 	KeyMap     *KeyMap
+}
+
+type QuitCommand struct {
+	State *MenuState
+}
+
+func NewQuitCommand(state *MenuState) Command { return &QuitCommand{State: state} }
+func (cmd *QuitCommand) String() string       { return "quit" }
+
+func (cmd *QuitCommand) Execute() {
+	cmd.State.Done = true
 }
 
 type ClearMenu struct {
@@ -29,8 +43,8 @@ type DisplayMenu struct {
 func (cmd *DisplayMenu) Execute() {
 	clear := &ClearMenu{State: cmd.State}
 	clear.Execute()
-	fmt.Fprintf(cmd.State.Out, "\033[1B\r> %s\033[1B\r", cmd.State.KeyMap.Name)
-	cmd.State.LinesDrawn += 2
+	fmt.Fprintf(cmd.State.Out, "\033[K> %s\n\r", cmd.State.KeyMap.Name)
+	cmd.State.LinesDrawn += 1
 	for key, value := range cmd.State.KeyMap.Keys {
 		cmd.State.LinesDrawn++
 		if child, isKeyMap := value.(*KeyMap); isKeyMap {
@@ -45,7 +59,6 @@ type SelectMenuItem struct {
 	State         *MenuState
 	Key           rune
 	BeforeExecute func()
-	AfterExecute  func()
 }
 
 func (cmd *SelectMenuItem) Execute() {
@@ -56,7 +69,7 @@ func (cmd *SelectMenuItem) Execute() {
 	if command != nil {
 		cmd.BeforeExecute()
 		command.Execute()
-		cmd.AfterExecute()
+		cmd.State.Done = true
 	} else {
 		cmd.State.KeyMap = nextHandler
 	}
