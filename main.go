@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"os/user"
 
 	"github.com/Nerdmaster/terminal"
@@ -64,9 +63,4 @@ func main() {
 		}
 		selectItem.Execute()
 	}
-	saneTerminal := exec.Command("stty", "sane")
-	saneTerminal.Stdin = os.Stdin
-	saneTerminal.Stdout = os.Stdout
-	saneTerminal.Stderr = os.Stderr
-	saneTerminal.Run()
 }
