@@ -9,7 +9,6 @@ import (
 )
 
 func main() {
-	stdinFd := int(os.Stdin.Fd())
 	menuState := &MenuState{Out: os.Stdout, Err: os.Stderr, In: os.Stdin}
 
 	currentUser, err := user.Current()
@@ -37,12 +36,7 @@ func main() {
 	})
 
 	loadConfig.Execute()
-	oldState, err := terminal.MakeRaw(stdinFd)
-	if err != nil {
-		fmt.Printf("Error putting terminal into raw mode: %s\n", err)
-		return
-	}
-	defer terminal.Restore(stdinFd, oldState)
+	restoreTerminal := rawTerminal()
 	keyReader := terminal.NewKeyReader(os.Stdin)
 	for !menuState.Done {
 		display := &DisplayMenu{State: menuState}
@@ -65,7 +59,7 @@ func main() {
 		selectItem := &SelectMenuItem{
 			State:         menuState,
 			Key:           key,
-			BeforeExecute: func() { terminal.Restore(stdinFd, oldState) },
+			BeforeExecute: restoreTerminal,
 		}
 		selectItem.Execute()
 	}

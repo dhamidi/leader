@@ -166,7 +166,7 @@ func parseCommand(parts []interface{}) (CommandFn, error) {
 			Path: shellCommandPath,
 			Args: shellCommandArgs,
 		}
-		return result.RedirectTo(state.Out, state.Err).InputFrom(state.In), nil
+		return result, nil
 	}, nil
 }
 
