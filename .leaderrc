@@ -5,13 +5,7 @@
       "name": "go",
       "keys": {
         "b": ["go", "build", "."],
-        "t": {
-          "name": "test",
-          "keys": {
-            ".": ["go", "test", "."],
-            "a": ["go", "test", "./..."]
-          }
-        }
+        "t": ["go", "test", "."]
       }
     }
   }
