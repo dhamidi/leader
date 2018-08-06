@@ -4,3 +4,5 @@
 - [x] Sort menu entries alphabetically
 - [ ] Integration with common build tools to autogenerate parts of `.leaderrc`
 - [x] Fix running interactive commands
+- [ ] Add looping keys, i.e. if `a b` is set to looping, one can press `a b b b b` ad inifinitum to keep running the command bound to `a b`
+- [ ] Run all commands in the shell by default (default to `bash`, allow configuration in `.leaderrc`)
