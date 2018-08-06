@@ -39,12 +39,13 @@ func (cmd *ShellCommand) RedirectTo(out io.Writer, err io.Writer) *ShellCommand 
 }
 func (cmd *ShellCommand) String() string { return cmd.Path + " " + strings.Join(cmd.Args, " ") }
 func (cmd *ShellCommand) Execute() {
+	shell := os.Getenv("SHELL")
 	args := append([]string{cmd.Path}, cmd.Args...)
 	for i, arg := range args {
 		args[i] = fmt.Sprintf(`"%s"`, strings.Replace(arg, `"`, `\"`, 0))
 	}
 	asScript := strings.Join(args, " ")
-	command := exec.Command("bash", "-c", asScript)
+	command := exec.Command(shell, "-c", asScript)
 	command.Stdout = cmd.Out
 	command.Stderr = cmd.Err
 	command.Stdin = cmd.In

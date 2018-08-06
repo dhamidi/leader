@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/dhamidi/leader"
@@ -50,4 +51,13 @@ func TestShellCommand_Execute_runs_command_in_bash(t *testing.T) {
 	}
 	assert.Equal(t, "bash", filepath.Base(shell))
 	assert.Equal(t, currentShellLevel+1, actualShellLevel)
+}
+
+func TestShellCommand_Execute_runs_command_in_the_shell_configured_by_the_user(t *testing.T) {
+	os.Setenv("SHELL", "echo")
+	testbed := newTestbed(t)
+	command := main.NewShellCommand("true")
+	command.RedirectTo(testbed.out, testbed.err).InputFrom(testbed.in).Execute()
+
+	assert.Equal(t, `-c "true"`, strings.TrimSpace(testbed.out.String()))
 }
