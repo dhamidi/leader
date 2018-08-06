@@ -16,6 +16,7 @@ type MenuState struct {
 	Root            *KeyMap
 	Path            []*KeyMap
 	BuiltinCommands map[string]CommandFn
+	RestoreTerminal func()
 }
 
 func (m *MenuState) CurrentPath() string {
@@ -102,9 +103,8 @@ func (cmd *DisplayMenu) Execute() {
 }
 
 type SelectMenuItem struct {
-	State         *MenuState
-	Key           rune
-	BeforeExecute func()
+	State *MenuState
+	Key   rune
 }
 
 func (cmd *SelectMenuItem) Execute() {
@@ -114,7 +114,7 @@ func (cmd *SelectMenuItem) Execute() {
 		return
 	}
 	if command != nil {
-		cmd.BeforeExecute()
+		cmd.State.RestoreTerminal()
 		command.Execute()
 		cmd.State.Done = true
 	} else {

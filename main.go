@@ -37,6 +37,7 @@ func main() {
 
 	loadConfig.Execute()
 	restoreTerminal := rawTerminal()
+	menuState.RestoreTerminal = restoreTerminal
 	keyReader := terminal.NewKeyReader(os.Stdin)
 	for !menuState.Done {
 		display := &DisplayMenu{State: menuState}
@@ -47,6 +48,7 @@ func main() {
 			return
 		}
 		key := keypress.Key
+
 		if key == terminal.KeyCtrlC {
 			break
 		}
@@ -57,9 +59,8 @@ func main() {
 		}
 
 		selectItem := &SelectMenuItem{
-			State:         menuState,
-			Key:           key,
-			BeforeExecute: restoreTerminal,
+			State: menuState,
+			Key:   key,
 		}
 		selectItem.Execute()
 	}
