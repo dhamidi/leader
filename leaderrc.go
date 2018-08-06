@@ -162,11 +162,13 @@ func parseCommand(parts []interface{}) (CommandFn, error) {
 	}
 
 	return func(state *MenuState) (Command, error) {
-		result := &ShellCommand{
-			Path: shellCommandPath,
-			Args: shellCommandArgs,
-		}
-		return result, nil
+		return NewShellCommand(
+			shellCommandPath,
+			shellCommandArgs...,
+		).
+			InputFrom(state.In).
+			RedirectTo(state.Out, state.Err), nil
+
 	}, nil
 }
 
