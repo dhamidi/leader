@@ -1,0 +1,3 @@
+language: go
+go:
+  version: "1.10"
