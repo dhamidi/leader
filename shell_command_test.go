@@ -41,5 +41,5 @@ func TestShellCommand_Execute_runs_command_in_the_shell_configured_by_the_user(t
 	command := main.NewShellCommand("true")
 	command.RedirectTo(testbed.out, testbed.err).InputFrom(testbed.in).Execute()
 
-	assert.Equal(t, `-c "true"`, strings.TrimSpace(testbed.out.String()))
+	assert.Equal(t, `-c true`, strings.TrimSpace(testbed.out.String()))
 }

@@ -41,10 +41,13 @@ func (cmd *ShellCommand) String() string { return cmd.Path + " " + strings.Join(
 func (cmd *ShellCommand) Execute() {
 	shell := os.Getenv("SHELL")
 	args := append([]string{cmd.Path}, cmd.Args...)
-	for i, arg := range args {
-		args[i] = fmt.Sprintf(`"%s"`, strings.Replace(arg, `"`, `\"`, 0))
+	asScript := args[0]
+	if len(args) > 1 {
+		for i, arg := range args {
+			args[i] = fmt.Sprintf(`"%s"`, strings.Replace(arg, `"`, `\"`, 0))
+		}
+		asScript = strings.Join(args, " ")
 	}
-	asScript := strings.Join(args, " ")
 	command := exec.Command(shell, "-c", asScript)
 	command.Stdout = cmd.Out
 	command.Stderr = cmd.Err
