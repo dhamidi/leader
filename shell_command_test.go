@@ -1,7 +1,6 @@
 package main_test
 
 import (
-	"bytes"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -12,23 +11,6 @@ import (
 	"github.com/dhamidi/leader"
 	"github.com/stretchr/testify/assert"
 )
-
-type testbed struct {
-	out *bytes.Buffer
-	err *bytes.Buffer
-	in  *bytes.Buffer
-	t   *testing.T
-}
-
-func newTestbed(t *testing.T) *testbed {
-	result := &testbed{
-		out: bytes.NewBufferString(""),
-		err: bytes.NewBufferString(""),
-		in:  bytes.NewBufferString(""),
-		t:   t,
-	}
-	return result
-}
 
 func shellLevel(t *testing.T) int {
 	t.Helper()
