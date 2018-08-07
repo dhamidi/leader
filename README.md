@@ -34,6 +34,7 @@ Here is an example configuration file, containing shortcuts useful when developi
         "b": ["go", "build", "."],
         "t": {
           "name": "test",
+          "loopingKeys": ["."],
           "keys": {
             ".": ["go", "test", "."],
             "a": ["go", "test", "./..."]
@@ -55,6 +56,11 @@ This produces the following key bindings:
 As this example shows, key maps can be nested to arbitrary depth.
 
 A keymap's `name` is used to as a label to indicate which keymap the user is currently in when running `leader`.
+
+
+## Looping keys
+
+If a key occurs in the list given under a keymap's `loopingKeys` entry, this key can be pressed repeatedly to rnu the same command again.
 
 ## Load order
 

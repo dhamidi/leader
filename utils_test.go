@@ -50,9 +50,11 @@ func newMenuState(bed *testbed) *main.MenuState {
 	}
 
 	menuState.Root = &main.KeyMap{
-		Name: "global",
+		Name:        "global",
+		LoopingKeys: []rune{'l'},
 		Keys: map[rune]interface{}{
 			'd': &dummyCommand{},
+			'l': &dummyCommand{},
 			'a': &main.KeyMap{
 				Name: "a",
 				Keys: map[rune]interface{}{

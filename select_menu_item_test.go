@@ -62,3 +62,26 @@ func TestSelectMenuItem_Execute_restores_the_terminal_state_before_running_a_com
 	assert.Equal(t, true, terminalRestored, "terminalRestored")
 
 }
+
+func TestSelectMenuItem_Execute_does_not_change_the_current_keymap_when_executing_a_looping_command(t *testing.T) {
+	testcase := newTestCase(t)
+	runLoopingCommand := &main.SelectMenuItem{
+		Key:   rune('l'),
+		State: testcase.state,
+	}
+	assert.Equal(t, "", testcase.state.CurrentPath(), "state.CurrentPath()")
+	runLoopingCommand.Execute()
+	loopingCommand := testcase.state.Root.Keys[rune('l')].(*dummyCommand)
+	assert.Equal(t, 1, loopingCommand.executed, "looping command executed")
+	assert.Equal(t, "", testcase.state.CurrentPath(), "state.CurrentPath()")
+}
+
+func TestSelectMenuItem_Execute_does_set_done_to_true_when_running_a_looping_command(t *testing.T) {
+	testcase := newTestCase(t)
+	runLoopingCommand := &main.SelectMenuItem{
+		Key:   rune('l'),
+		State: testcase.state,
+	}
+	runLoopingCommand.Execute()
+	assert.Equal(t, false, testcase.state.Done, "state.Done set to true")
+}

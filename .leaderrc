@@ -3,9 +3,10 @@
     "q": ["<quit>"],
     "g": {
       "name": "go",
+      "loopingKeys": ["t"],
       "keys": {
         "b": ["go", "build", "."],
-        "t": ["go", "test", "."]
+        "t": ["go", "test", "-v", "."]
       }
     }
   }

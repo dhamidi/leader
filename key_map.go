@@ -8,10 +8,23 @@ type Command interface {
 type CommandFn func(*MenuState) (Command, error)
 
 type KeyMap struct {
-	Name string
-	Keys map[rune]interface{}
+	Name        string
+	LoopingKeys []rune
+	Keys        map[rune]interface{}
 }
 
+func (km *KeyMap) AddLoopingKey(key rune) {
+	km.LoopingKeys = append(km.LoopingKeys, key)
+}
+func (km *KeyMap) IsLoopingKey(key rune) bool {
+	for _, loopingKey := range km.LoopingKeys {
+		if loopingKey == key {
+			return true
+		}
+	}
+
+	return false
+}
 func (km *KeyMap) HandleKey(key rune) (*KeyMap, Command) {
 	next, found := km.Keys[key]
 	if !found {
@@ -28,6 +41,9 @@ func (km *KeyMap) HandleKey(key rune) (*KeyMap, Command) {
 }
 
 func (km *KeyMap) Merge(other *KeyMap) error {
+	for _, loopingKey := range other.LoopingKeys {
+		km.AddLoopingKey(loopingKey)
+	}
 	for key, entry := range other.Keys {
 		if km.Keys[key] == nil {
 			km.Keys[key] = entry

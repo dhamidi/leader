@@ -14,7 +14,9 @@ func (cmd *SelectMenuItem) Execute() {
 	if command != nil {
 		cmd.State.RestoreTerminal()
 		command.Execute()
-		cmd.State.Done = true
+		if !currentHandler.IsLoopingKey(cmd.Key) {
+			cmd.State.Done = true
+		}
 	} else {
 		cmd.State.PushHandler(nextHandler)
 	}

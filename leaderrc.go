@@ -68,7 +68,11 @@ func LoadLeaderRC(filename string, state *MenuState) error {
 		return err
 	}
 
-	return parseKeyBindings(rawData, state)
+	if err := parseKeyBindings(rawData, state); err != nil {
+		return fmt.Errorf("%s: %s", filename, err)
+	}
+
+	return nil
 }
 
 func parseKeyBindings(rc *LeaderRCJSON, state *MenuState) error {
@@ -100,6 +104,22 @@ func parseKeyMap(keyMap map[string]interface{}, path string, state *MenuState) (
 		name = keyMapName
 	}
 	result := &KeyMap{Name: name, Keys: map[rune]interface{}{}}
+	if keyMap["loopingKeys"] != nil {
+		loopingKeys, isList := keyMap["loopingKeys"].([]interface{})
+		if !isList {
+			return nil, fmt.Errorf("%s.loopingKeys needs to be a list of strings", path)
+		}
+		for i, key := range loopingKeys {
+			keyString, ok := key.(string)
+			if !ok {
+				return nil, fmt.Errorf("%s.loopingKeys[%d] needs to be a string (is %#v)", path, i, key)
+			}
+
+			keyRune := keyFromString(keyString)
+			result.AddLoopingKey(keyRune)
+
+		}
+	}
 	keys, isObject := keyMap["keys"].(map[string]interface{})
 	if !isObject {
 		return nil, fmt.Errorf("%s needs to be an object", path)
