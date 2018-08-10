@@ -4,4 +4,5 @@ package main
 type Context struct {
 	Terminal      *Terminal
 	CurrentKeyMap *KeyMap
+	Executor      Executor
 }

@@ -25,6 +25,9 @@ func (cmd *SelectMenuEntry) Execute() error {
 	if binding.HasChildren() {
 		cmd.CurrentKeyMap = binding.Children()
 	} else {
+		if err := cmd.Terminal.Restore(); err != nil {
+			return err
+		}
 		return binding.Execute()
 	}
 

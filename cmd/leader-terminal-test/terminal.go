@@ -12,6 +12,7 @@ import (
 // Terminal represents a TTY
 type Terminal struct {
 	fd            int
+	file          *os.File
 	out           io.Writer
 	originalState *terminal.State
 	keyReader     *terminal.KeyReader
@@ -24,12 +25,23 @@ func NewTerminalTTY() (*Terminal, error) {
 		return nil, fmt.Errorf("NewTerminalTTY: %s", err)
 	}
 	tty := &Terminal{
-		fd:  int(devTTY.Fd()),
-		out: devTTY,
+		fd:   int(devTTY.Fd()),
+		out:  devTTY,
+		file: devTTY,
 	}
 	tty.keyReader = terminal.NewKeyReader(devTTY)
 
 	return tty, nil
+}
+
+// File returns the file object connected to this terminal (or nil if
+// this terminal is not connected to a file)
+func (term *Terminal) File() *os.File {
+	_, connectedToFile := term.out.(*os.File)
+	if !connectedToFile {
+		return nil
+	}
+	return term.file
 }
 
 // MakeRaw puts this terminal into raw mode.
