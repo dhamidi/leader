@@ -13,7 +13,7 @@ func newTestContext(t *testing.T, root *main.KeyMap, input io.Reader) *main.Cont
 	testTerminal, err := main.NewTerminalTTY()
 	assert.NoError(t, err)
 	return &main.Context{
-		Terminal:      testTerminal.InputFrom(input),
+		Terminal:      testTerminal.InputFrom(input).OutputTo(bytes.NewBufferString("")),
 		CurrentKeyMap: root,
 	}
 }
@@ -54,4 +54,25 @@ func TestSelectMenuEntry_Execute_gives_does_not_execute_command_on_binding_with_
 	selectMenuEntry.Execute()
 
 	assert.Equal(t, 0, command.called)
+}
+
+func TestSelectMenuEntry_Execute_displays_the_current_keymap_as_a_menu(t *testing.T) {
+	keymap := main.NewKeyMap("root")
+	keymap.Bind('a').Do(main.DoNothing).Describe("do a")
+	keymap.Bind('b').Do(main.DoNothing).Describe("do b")
+	input := bytes.NewBufferString("")
+	output := bytes.NewBufferString("")
+	context := newTestContext(t, keymap, input)
+	context.Terminal.OutputTo(output)
+
+	selectMenuEntry := main.NewSelectMenuEntry(context)
+	selectMenuEntry.Execute()
+
+	expectedMenu := main.NewMenuView([]*main.MenuEntry{
+		{Key: 'a', Label: "do a"},
+		{Key: 'b', Label: "do b"},
+	})
+	expectedOutput := main.MustRenderViewToString(expectedMenu)
+
+	assert.Contains(t, output.String(), expectedOutput)
 }

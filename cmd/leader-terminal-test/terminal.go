@@ -54,6 +54,12 @@ func (term *Terminal) MakeRaw() error {
 	return nil
 }
 
+// OutputTo to sets up this terminal to write its output into the provided io.Writer.
+func (term *Terminal) OutputTo(out io.Writer) *Terminal {
+	term.out = out
+	return term
+}
+
 // InputFrom sets up this terminal to read its input from the provided io.Reader.
 func (term *Terminal) InputFrom(src io.Reader) *Terminal {
 	term.keyReader = terminal.NewKeyReader(src)

@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 // Command represents an executable action to modify state.  The
 // action can potentially result in an error.
@@ -22,9 +25,10 @@ type KeyMap struct {
 
 // KeyBinding represents a binding of a key to command or keymap.
 type KeyBinding struct {
-	key      rune
-	command  Command
-	children *KeyMap
+	key         rune
+	command     Command
+	children    *KeyMap
+	description string
 }
 
 var (
@@ -42,6 +46,12 @@ func NewKeyBinding(key rune) *KeyBinding {
 		command:  DoNothing,
 		children: NewKeyMap(""),
 	}
+}
+
+// Describe sets the description for this key binding and returns this binding.
+func (b *KeyBinding) Describe(description string) *KeyBinding {
+	b.description = description
+	return b
 }
 
 // HasChildren returns true if any child bindings have been defined for this binding.
@@ -112,4 +122,16 @@ func (m *KeyMap) LookupKey(key rune) *KeyBinding {
 	}
 
 	return binding
+}
+
+// Bindings returns all key bindings in alphabetically ascending order.
+func (m *KeyMap) Bindings() []*KeyBinding {
+	bindings := []*KeyBinding{}
+	for _, binding := range m.bindings {
+		bindings = append(bindings, binding)
+	}
+	sort.Slice(bindings, func(i, j int) bool {
+		return bindings[i].key < bindings[j].key
+	})
+	return bindings
 }

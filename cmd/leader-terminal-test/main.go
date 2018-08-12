@@ -20,7 +20,7 @@ func main() {
 		Executor:      NewShellExecutor("bash", "-c").Attach(tty.File()),
 		Terminal:      tty,
 	}
-	rootKeyMap.DefineKey('d', NewRunShellCommand(context, "date").Execute)
+	rootKeyMap.Bind('d').Do(NewRunShellCommand(context, "date").Execute).Describe("date")
 	errorHandler.Must(tty.MakeRaw)
 	selectMenuEntry := NewSelectMenuEntry(context)
 	errorHandler.Print(selectMenuEntry.Execute())
