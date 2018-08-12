@@ -48,6 +48,15 @@ func NewKeyBinding(key rune) *KeyBinding {
 	}
 }
 
+// String returns a human readable representation of this key binding.  It does not descend into any child key maps.
+func (b *KeyBinding) String() string {
+	if b.HasChildren() {
+		return fmt.Sprintf("[%c] <keymap %s>", b.key, b.children.Name())
+	}
+
+	return fmt.Sprintf("[%c] %s", b.key, b.description)
+}
+
 // Describe sets the description for this key binding and returns this binding.
 func (b *KeyBinding) Describe(description string) *KeyBinding {
 	b.description = description
@@ -101,6 +110,26 @@ func (m *KeyMap) Bind(key rune) *KeyBinding {
 	binding := NewKeyBinding(key)
 	m.bindings[key] = binding
 	return binding
+}
+
+// Set adds the given binding to this key map, merging any child bindings if necessary.
+func (m *KeyMap) Set(b *KeyBinding) *KeyMap {
+	if m.bindings[b.key] == nil {
+		m.bindings[b.key] = b
+		return m
+	}
+
+	if !b.HasChildren() {
+		m.bindings[b.key] = b
+		return m
+	}
+
+	existingBinding := m.bindings[b.key]
+	for _, child := range b.Children().Bindings() {
+		existingBinding.Children().Set(child)
+	}
+
+	return m
 }
 
 // DefineKey binds key to the given command.
