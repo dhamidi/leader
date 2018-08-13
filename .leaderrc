@@ -1,12 +1,16 @@
 {
-  "bindings": {
-    "q": ["<quit>"],
+  "keys": {
+    "d": {
+      "name": "directory",
+      "keys": {
+        ".": "cd ..; stty sane; pwd; exec bash"
+       }
+    },
     "g": {
       "name": "go",
-      "loopingKeys": ["t"],
       "keys": {
-        "b": ["go", "build", "."],
-        "t": ["go", "test", "-v", "."]
+        "b": "go build .",
+        "t": "go test -v ."
       }
     }
   }
