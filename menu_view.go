@@ -31,6 +31,18 @@ func (v *MenuView) Render(out io.Writer) error {
 	return nil
 }
 
+// Erase erases this menu from the terminal.
+func (v *MenuView) Erase(out io.Writer) error {
+	for range v.Entries {
+		_, err := fmt.Fprintf(out, "\033[A\033[2K")
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // MenuEntry represents an entry in a menu that should be displayed in a terminal.
 type MenuEntry struct {
 	// Key that needs to be pressed to select this menu entry.

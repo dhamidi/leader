@@ -18,7 +18,8 @@ func NewSelectMenuEntry(ctx *Context) *SelectMenuEntry {
 // Execute runs this command.
 func (cmd *SelectMenuEntry) Execute() error {
 	for {
-		if err := cmd.displayMenu(); err != nil {
+		menu, err := cmd.displayMenu()
+		if err != nil {
 			return err
 		}
 		key, err := cmd.Terminal.ReadKey()
@@ -27,6 +28,9 @@ func (cmd *SelectMenuEntry) Execute() error {
 		}
 		binding := cmd.CurrentKeyMap.LookupKey(key)
 		if binding.HasChildren() {
+			if err := menu.Erase(cmd.Terminal); err != nil {
+				return err
+			}
 			cmd.CurrentKeyMap = binding.Children()
 		} else {
 			if err := cmd.Terminal.Restore(); err != nil {
@@ -38,12 +42,12 @@ func (cmd *SelectMenuEntry) Execute() error {
 }
 
 // displayMenu displays a menu for the current keymap
-func (cmd *SelectMenuEntry) displayMenu() error {
+func (cmd *SelectMenuEntry) displayMenu() (*MenuView, error) {
 	menuEntries := []*MenuEntry{}
 	for _, binding := range cmd.CurrentKeyMap.Bindings() {
 		menuEntries = append(menuEntries, NewMenuEntryForKeyBinding(binding))
 	}
 
 	menu := NewMenuView(menuEntries)
-	return menu.Render(cmd.Terminal)
+	return menu, menu.Render(cmd.Terminal)
 }

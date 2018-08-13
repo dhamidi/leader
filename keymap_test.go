@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/dhamidi/leader/cmd/leader-terminal-test"
+	"github.com/dhamidi/leader"
 	"github.com/stretchr/testify/assert"
 )
 

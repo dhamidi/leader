@@ -5,7 +5,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/dhamidi/leader/cmd/leader-terminal-test"
+	"github.com/dhamidi/leader"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -75,4 +75,25 @@ func TestSelectMenuEntry_Execute_displays_the_current_keymap_as_a_menu(t *testin
 	expectedOutput := main.MustRenderViewToString(expectedMenu)
 
 	assert.Contains(t, output.String(), expectedOutput)
+}
+
+func TestSelectMenuEntry_Execute_erases_the_current_menu_before_selecting_a_child_menu(t *testing.T) {
+	keymap := main.NewKeyMap("root")
+	input := bytes.NewBufferString("a")
+	keymap.Bind('a').Children().Rename("b").DefineKey('b', main.DoNothing)
+	context := newTestContext(t, keymap, input)
+	output := bytes.NewBufferString("")
+	context.Terminal.OutputTo(output)
+	selectMenuEntry := main.NewSelectMenuEntry(context)
+
+	selectMenuEntry.Execute()
+
+	expectedMenu := main.NewMenuView([]*main.MenuEntry{
+		{Key: 'a', Label: "do a"},
+	})
+	eraseMenuBuffer := bytes.NewBufferString("")
+	expectedMenu.Erase(eraseMenuBuffer)
+
+	assert.True(t, bytes.Contains(output.Bytes(), eraseMenuBuffer.Bytes()),
+		"output %q does not contain instructions %q", output, eraseMenuBuffer)
 }

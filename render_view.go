@@ -8,6 +8,7 @@ import (
 // View is a component that can display data on a terminal.
 type View interface {
 	Render(out io.Writer) error
+	Erase(out io.Writer) error
 }
 
 // RenderViewToString renders view into a string.
