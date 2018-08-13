@@ -17,24 +17,24 @@ func NewSelectMenuEntry(ctx *Context) *SelectMenuEntry {
 
 // Execute runs this command.
 func (cmd *SelectMenuEntry) Execute() error {
-	if err := cmd.displayMenu(); err != nil {
-		return err
-	}
-	key, err := cmd.Terminal.ReadKey()
-	if err != nil {
-		return fmt.Errorf("SelectMenuEntry: %s", err)
-	}
-	binding := cmd.CurrentKeyMap.LookupKey(key)
-	if binding.HasChildren() {
-		cmd.CurrentKeyMap = binding.Children()
-	} else {
-		if err := cmd.Terminal.Restore(); err != nil {
+	for {
+		if err := cmd.displayMenu(); err != nil {
 			return err
 		}
-		return binding.Execute()
+		key, err := cmd.Terminal.ReadKey()
+		if err != nil {
+			return fmt.Errorf("SelectMenuEntry: %s", err)
+		}
+		binding := cmd.CurrentKeyMap.LookupKey(key)
+		if binding.HasChildren() {
+			cmd.CurrentKeyMap = binding.Children()
+		} else {
+			if err := cmd.Terminal.Restore(); err != nil {
+				return err
+			}
+			return binding.Execute()
+		}
 	}
-
-	return nil
 }
 
 // displayMenu displays a menu for the current keymap

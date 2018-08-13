@@ -25,11 +25,11 @@ func temporaryFileWithContent(content string) (*os.File, error) {
 func TestLoadConfigFile_Execute_merges_key_bindings_from_config_file(t *testing.T) {
 	configFile, err := temporaryFileWithContent(`
 {
-  "bindings": {
+  "keys": {
     "d": "date",
     "g": {
       "name": "go",
-      "bindings": {
+      "keys": {
         "t": "go test ."
       }
     }
@@ -40,8 +40,6 @@ func TestLoadConfigFile_Execute_merges_key_bindings_from_config_file(t *testing.
 	defer os.Remove(configFile.Name())
 
 	keymap := main.NewKeyMap("root")
-	keymap.Bind('d').Do(main.DoNothing).Describe("do nothing")
-	keymap.Bind('q').Do(main.DoNothing).Describe("quit")
 	context := newTestContext(t, keymap, bytes.NewBufferString(""))
 
 	loadConfig := main.NewLoadConfigFile(context, configFile.Name())

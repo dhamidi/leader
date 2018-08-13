@@ -11,11 +11,11 @@ import (
 func TestConfig_ParseJSON(t *testing.T) {
 	exampleConfig := `
 {
-  "bindings": {
+  "keys": {
     "d": "date",
     "r": {
       "name": "rake",
-      "bindings": {
+      "keys": {
         "t": "bundle exec rake test"
       }
     }
@@ -25,9 +25,9 @@ func TestConfig_ParseJSON(t *testing.T) {
 	config := main.NewConfig()
 	assert.NoError(t, config.ParseJSON(bytes.NewBufferString(exampleConfig)))
 	assert.Equal(t, "root", *config.Root.Name)
-	assert.Equal(t, "date", *(config.Root.Bindings["d"].ShellCommand))
+	assert.Equal(t, "date", *(config.Root.Keys["d"].ShellCommand))
 	assert.Equal(t, "bundle exec rake test",
-		*(config.Root.Bindings["r"].Child.Bindings["t"].ShellCommand),
+		*(config.Root.Keys["r"].Child.Keys["t"].ShellCommand),
 	)
-	assert.Equal(t, "rake", *(config.Root.Bindings["r"].Child.Name))
+	assert.Equal(t, "rake", *(config.Root.Keys["r"].Child.Name))
 }

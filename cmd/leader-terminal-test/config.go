@@ -11,8 +11,8 @@ type Config struct {
 }
 
 type ConfigMap struct {
-	Name     *string
-	Bindings ConfigBindings
+	Name *string
+	Keys ConfigBindings
 }
 
 // KeyMapName returns a name suitable for use as the name of a key map.
@@ -73,7 +73,7 @@ func (cfg *Config) MergeIntoKeyMap(context *Context, keymap *KeyMap) {
 }
 
 func (cfg *Config) mergeConfigMap(context *Context, configMap *ConfigMap, keymap *KeyMap) {
-	for key, binding := range configMap.Bindings {
+	for key, binding := range configMap.Keys {
 		keyRune := ([]rune(key))[0]
 		keyBinding := NewKeyBinding(keyRune)
 

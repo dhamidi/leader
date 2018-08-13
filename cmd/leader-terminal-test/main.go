@@ -16,11 +16,13 @@ func main() {
 	}
 	rootKeyMap := NewKeyMap("root")
 	context := &Context{
+		ErrorLogger:   errorHandler,
 		CurrentKeyMap: rootKeyMap,
 		Executor:      NewShellExecutor("bash", "-c").Attach(tty.File()),
 		Terminal:      tty,
 	}
-	rootKeyMap.Bind('d').Do(NewRunShellCommand(context, "date").Execute).Describe("date")
+	loadConfig := NewLoadConfig(context, os.Getenv("PWD"), os.Getenv("HOME"))
+	errorHandler.Must(loadConfig.Execute)
 	errorHandler.Must(tty.MakeRaw)
 	selectMenuEntry := NewSelectMenuEntry(context)
 	errorHandler.Print(selectMenuEntry.Execute())

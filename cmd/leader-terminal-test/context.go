@@ -5,4 +5,5 @@ type Context struct {
 	Terminal      *Terminal
 	CurrentKeyMap *KeyMap
 	Executor      Executor
+	ErrorLogger   *ErrorLogger
 }

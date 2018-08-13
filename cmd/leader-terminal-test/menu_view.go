@@ -42,8 +42,12 @@ type MenuEntry struct {
 
 // NewMenuEntryForKeyBinding returns a new menu entry for a given key binding.
 func NewMenuEntryForKeyBinding(binding *KeyBinding) *MenuEntry {
+	label := binding.description
+	if binding.HasChildren() {
+		label = binding.Children().Name()
+	}
 	return &MenuEntry{
 		Key:   binding.key,
-		Label: binding.description,
+		Label: label,
 	}
 }
