@@ -1,19 +1,21 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/Nerdmaster/terminal"
+)
 
 // SelectMenuEntry reads a key from the terminal and changes the
 // current key map to reflect this selection.
 type SelectMenuEntry struct {
 	*Context
-	breadcrumbs []string
 }
 
 // NewSelectMenuEntry creates a new instance of this command bound to the given context.
 func NewSelectMenuEntry(ctx *Context) *SelectMenuEntry {
 	return &SelectMenuEntry{
-		Context:     ctx,
-		breadcrumbs: []string{ctx.CurrentKeyMap.Name()},
+		Context: ctx,
 	}
 }
 
@@ -32,6 +34,16 @@ func (cmd *SelectMenuEntry) Execute() error {
 		if err != nil {
 			return fmt.Errorf("SelectMenuEntry: %s", err)
 		}
+		if cmd.isGoBackKey(key) {
+			menu.Erase(cmd.Terminal)
+			breadcrumbs.Erase(cmd.Terminal)
+			NewGoBack(cmd.Context).Execute()
+			continue
+		}
+		if cmd.isExitKey(key) {
+			cmd.Terminal.Restore()
+			return nil
+		}
 		binding := cmd.CurrentKeyMap.LookupKey(key)
 		if binding.HasChildren() {
 			if err := breadcrumbs.Erase(cmd.Terminal); err != nil {
@@ -40,8 +52,7 @@ func (cmd *SelectMenuEntry) Execute() error {
 			if err := menu.Erase(cmd.Terminal); err != nil {
 				return err
 			}
-			cmd.CurrentKeyMap = binding.Children()
-			cmd.pushBreadcrumb(cmd.CurrentKeyMap.Name())
+			cmd.Navigate(binding.Children())
 		} else {
 			if err := cmd.Terminal.Restore(); err != nil {
 				return err
@@ -64,11 +75,24 @@ func (cmd *SelectMenuEntry) displayMenu() (*MenuView, error) {
 
 // displayBreadcrumbs displays breadcrumbs for the path to the current key map.
 func (cmd *SelectMenuEntry) displayBreadcrumbs() (*BreadcrumbsView, error) {
-	breadcrumbs := NewBreadcrumbsView(cmd.breadcrumbs)
-	return breadcrumbs, breadcrumbs.Render(cmd.Terminal)
+	breadcrumbs := []string{}
+	for _, keymap := range cmd.History {
+		breadcrumbs = append(breadcrumbs, keymap.Name())
+	}
+	breadcrumbs = append(breadcrumbs, cmd.CurrentKeyMap.Name())
+	breadcrumbsView := NewBreadcrumbsView(breadcrumbs)
+	return breadcrumbsView, breadcrumbsView.Render(cmd.Terminal)
 }
 
-// pushBreadcrumb adds a breadcrumb
-func (cmd *SelectMenuEntry) pushBreadcrumb(crumb string) {
-	cmd.breadcrumbs = append(cmd.breadcrumbs, crumb)
+// isGoBackKey returns true if pressing key should go back in the menu history
+func (cmd *SelectMenuEntry) isGoBackKey(key rune) bool {
+	return key == terminal.KeyCtrlB ||
+		key == terminal.KeyBackspace ||
+		key == terminal.KeyUp ||
+		key == terminal.KeyLeft
+}
+
+// isExitKey returns true if pressing key should exit the program
+func (cmd *SelectMenuEntry) isExitKey(key rune) bool {
+	return key == terminal.KeyCtrlC
 }
