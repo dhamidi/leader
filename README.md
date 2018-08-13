@@ -27,17 +27,16 @@ Here is an example configuration file, containing shortcuts useful when developi
 ```
 {
   "keys": {
-    "q": ["<quit>"],
     "g": {
       "name": "go",
       "keys": {
-        "b": ["go", "build", "."],
+        "b": "go build ."
         "t": {
           "name": "test",
           "loopingKeys": ["."],
           "keys": {
-            ".": ["go", "test", "."],
-            "a": ["go", "test", "./..."]
+            ".": "go test .",
+            "a": "go test ./..."
           }
         }
       }
@@ -48,7 +47,6 @@ Here is an example configuration file, containing shortcuts useful when developi
 
 This produces the following key bindings:
 
-- `q` is bound to the builtin command `quit`.  The `<` and `>` mark the command as a builtin command.
 - `g b` is bound to running `go build .`
 - `g t .` is bound to running `go test .`
 - `g t a` is bound to running `go test ./...`
