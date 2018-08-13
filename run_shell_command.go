@@ -16,5 +16,8 @@ func NewRunShellCommand(ctx *Context, shellCommand string) *RunShellCommand {
 
 // Execute runs this command.
 func (cmd *RunShellCommand) Execute() error {
+	if loopingExecutor, canLoop := cmd.Executor.(LoopingExecutor); cmd.CurrentBindingIsLooping() && canLoop {
+		return loopingExecutor.RunLoopingCommand(cmd.ShellCommand)
+	}
 	return cmd.Executor.RunCommand(cmd.ShellCommand)
 }

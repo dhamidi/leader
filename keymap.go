@@ -36,7 +36,7 @@ var (
 	// UnboundKey is a null-object representing non-existing key bindings.
 	//
 	// Executing its associated command returns an error.
-	UnboundKey = NewKeyBinding('?').Do(FailWhenExecuted(fmt.Errorf("unbound key")))
+	UnboundKey = NewKeyBinding('?').Do(DoNothing)
 )
 
 // NewKeyBinding returns a new key binding for the given key.  It is

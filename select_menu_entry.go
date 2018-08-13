@@ -45,6 +45,7 @@ func (cmd *SelectMenuEntry) Execute() error {
 			return nil
 		}
 		binding := cmd.CurrentKeyMap.LookupKey(key)
+		cmd.PushKey(key)
 		if binding.HasChildren() {
 			if err := breadcrumbs.Erase(cmd.Terminal); err != nil {
 				return err
@@ -59,6 +60,9 @@ func (cmd *SelectMenuEntry) Execute() error {
 			}
 
 			if binding.IsLooping() {
+				if _, canLoop := cmd.Executor.(LoopingExecutor); canLoop {
+					return binding.Execute()
+				}
 				cmd.ErrorLogger.Print(binding.Execute())
 				cmd.ErrorLogger.Print(cmd.Terminal.MakeRaw())
 				continue

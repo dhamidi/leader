@@ -9,3 +9,10 @@ type Executor interface {
 	// command that is spawned by RunCommand.
 	RunCommand(shellCommand string) error
 }
+
+// LoopingExecutor supports special casing of looping commands.
+type LoopingExecutor interface {
+	// RunLoopingCommand works like RunCommand, but invokes leader
+	// with the current state again after running the command.
+	RunLoopingCommand(shellCommand string) error
+}

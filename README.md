@@ -71,13 +71,25 @@ The closer a file is to your working directory, the more important keybindings i
 To trigger `leader` when pressing `\` in bash, run the following command and add it to your bash initialization file:
 
     bind -x '"\\":leader'
+    bind -x '"\C-h":eval $(leader print)'
 
 Now every time you press `\`, `leader` will be started.
+
+Pressing `C-h` also invokes `leader`, however instead of actually running a command `leader` prints it to stdout where the shell interprets it as a command to run.  This is necessary for running commands that modify the current shell's state, such as `cd`.
 
 # ZSH integration
 
 To trigger `leader` when pressing `\` in zsh, run the following command and add it to your zsh initialization file:
 
-    bindkey -s '\\' "$(which leader)"
+    bindkey -s '\\' "leader\C-j"
+    bindkey -s '\C-h' 'eval $(leader print)\C-j'
 
 Now every time you press `\`, `leader` will be started.
+
+Pressing `C-h` also invokes `leader`, however instead of actually running a command `leader` prints it to stdout where the shell interprets it as a command to run.  This is necessary for running commands that modify the current shell's state, such as `cd`.
+
+# Execution environment
+
+All commands found in `.leaderrc` are currently passed as arguments to `bash -c`.
+
+In order to support modifying the environment of the current shell, `leader` also supports _printing_ commands instead of running them.

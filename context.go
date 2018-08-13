@@ -5,6 +5,7 @@ type Context struct {
 	Terminal      *Terminal
 	CurrentKeyMap *KeyMap
 	History       []*KeyMap
+	KeyPath       []rune
 	Executor      Executor
 	ErrorLogger   *ErrorLogger
 }
@@ -28,4 +29,18 @@ func (ctx *Context) PopHistory() *KeyMap {
 	lastItem := ctx.History[len(ctx.History)-1]
 	ctx.History = ctx.History[:len(ctx.History)-1]
 	return lastItem
+}
+
+// CurrentBindingIsLooping returns true if the currently selected key binding is a looping key binding.
+func (ctx *Context) CurrentBindingIsLooping() bool {
+	binding := ctx.CurrentKeyMap.LookupKey(ctx.KeyPath[len(ctx.KeyPath)-1])
+	return binding.IsLooping()
+}
+
+// PushKey records the given key in the key path.  A key is never recorded twice in a row.
+func (ctx *Context) PushKey(key rune) {
+	if len(ctx.KeyPath) > 0 && ctx.KeyPath[len(ctx.KeyPath)-1] == key {
+		return
+	}
+	ctx.KeyPath = append(ctx.KeyPath, key)
 }

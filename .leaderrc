@@ -1,5 +1,13 @@
 {
   "keys": {
+    "/": {
+      "name": "file system",
+      "loopingKeys": ["u", "d"],
+      "keys": {
+        "u": "pushd .. >/dev/null && pwd",
+        "d": "popd >/dev/null && pwd"
+      }
+    },
     "d": {
       "name": "directory",
       "keys": {
