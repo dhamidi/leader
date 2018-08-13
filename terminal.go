@@ -1,17 +1,94 @@
 package main
 
 import (
+	"fmt"
+	"io"
 	"os"
+	"syscall"
 
 	"github.com/Nerdmaster/terminal"
 )
 
-func rawTerminal() func() {
-	oldState, err := terminal.MakeRaw(int(os.Stdin.Fd()))
+// Terminal represents a TTY
+type Terminal struct {
+	fd            int
+	file          *os.File
+	out           io.Writer
+	originalState *terminal.State
+	keyReader     *terminal.KeyReader
+}
+
+// NewTerminalTTY returns a terminal connected to /dev/tty.
+func NewTerminalTTY() (*Terminal, error) {
+	devTTY, err := os.OpenFile("/dev/tty", os.O_RDWR, 0644)
 	if err != nil {
-		panic(err)
+		return nil, fmt.Errorf("NewTerminalTTY: %s", err)
 	}
-	return func() {
-		terminal.Restore(int(os.Stdin.Fd()), oldState)
+	tty := &Terminal{
+		fd:   int(devTTY.Fd()),
+		out:  devTTY,
+		file: devTTY,
 	}
+	tty.keyReader = terminal.NewKeyReader(devTTY)
+
+	return tty, nil
+}
+
+// File returns the file object connected to this terminal (or nil if
+// this terminal is not connected to a file)
+func (term *Terminal) File() *os.File {
+	_, connectedToFile := term.out.(*os.File)
+	if !connectedToFile {
+		return nil
+	}
+	return term.file
+}
+
+// MakeRaw puts this terminal into raw mode.
+func (term *Terminal) MakeRaw() error {
+	originalState, err := terminal.MakeRaw(term.fd)
+	if err != nil {
+		return fmt.Errorf("terminal.GetState: %s", err)
+	}
+	term.originalState = originalState
+	return nil
+}
+
+// OutputTo to sets up this terminal to write its output into the provided io.Writer.
+func (term *Terminal) OutputTo(out io.Writer) *Terminal {
+	term.out = out
+	return term
+}
+
+// InputFrom sets up this terminal to read its input from the provided io.Reader.
+func (term *Terminal) InputFrom(src io.Reader) *Terminal {
+	term.keyReader = terminal.NewKeyReader(src)
+	return term
+}
+
+// Write implements io.Writer by writing bytes to the underlying terminal.
+func (term *Terminal) Write(data []byte) (int, error) {
+	return term.out.Write(data)
+}
+
+// Restore restores the original terminal state
+func (term *Terminal) Restore() error {
+	if term.originalState == nil {
+		return nil
+	}
+	err := terminal.Restore(term.fd, term.originalState)
+	if errno, ok := err.(syscall.Errno); ok && errno == 0 {
+		return nil
+	}
+	return err
+}
+
+// ReadKey reads a single key code from the terminal
+func (term *Terminal) ReadKey() (rune, error) {
+	keypress, err := term.keyReader.ReadKeypress()
+	ctrlC := rune('\003')
+	if err != nil {
+		return ctrlC, nil
+	}
+	return keypress.Key, nil
 }

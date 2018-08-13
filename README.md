@@ -26,7 +26,7 @@ Here is an example configuration file, containing shortcuts useful when developi
 
 ```
 {
-  "bindings": {
+  "keys": {
     "q": ["<quit>"],
     "g": {
       "name": "go",
