@@ -56,6 +56,19 @@ func TestSelectMenuEntry_Execute_gives_does_not_execute_command_on_binding_with_
 	assert.Equal(t, 0, command.called)
 }
 
+func TestSelectMenuEntry_Execute_displays_breadscrumbs_for_the_current_path(t *testing.T) {
+	keymap := main.NewKeyMap("root")
+	input := bytes.NewBufferString("a")
+	keymap.Bind('a').Children().Rename("a").DefineKey('b', main.DoNothing)
+	context := newTestContext(t, keymap, input)
+	output := bytes.NewBufferString("")
+	context.Terminal.OutputTo(output)
+	selectMenuEntry := main.NewSelectMenuEntry(context)
+
+	selectMenuEntry.Execute()
+	assert.Contains(t, output.String(), "root > a")
+}
+
 func TestSelectMenuEntry_Execute_displays_the_current_keymap_as_a_menu(t *testing.T) {
 	keymap := main.NewKeyMap("root")
 	keymap.Bind('a').Do(main.DoNothing).Describe("do a")

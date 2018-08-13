@@ -10,7 +10,7 @@
       "name": "go",
       "keys": {
         "b": "go build .",
-        "t": "go test -v ."
+        "t": "go test ."
       }
     }
   }
