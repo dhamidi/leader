@@ -1,3 +1,22 @@
 language: go
 go:
-  - "1.10"
+- '1.10'
+before_install:
+  - go get github.com/mitchellh/gox
+install:
+  - # skip
+script:
+  - go get -t -v ./...
+  - go test -v -race ./...
+  - if [ -n "$TRAVIS_TAG" ]; then gox -os="linux darwin" -arch="amd64" -output="leader.." -ldflags "-X main.Rev=`git rev-parse --short HEAD`" -verbose ./...; fi
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: fI8LPibQd9m+XtbYtMYbBIR415xNAprDIu2BRNtXvG0TnNOT38gzQtG9Jy8S4H7H76kLqxG9+HyfIeHJfZbKQ3BKGz7JdLTlsyS0rUmxeHvHfYPkvwiXivdMwz/4AKOXpVjBxsd2ROS28eWgpoB7/k4O/VUwb3daHAo1TVVB435lsybukVwY/TzkxbxHtABL8RQcjS6srEFWucPm6wzb+EuIXemnXKpe9ViNMVkYafnRgiAdMsQpup/tEekp2gUez1+ty2H+ibTW+hgEXivuAeuZMb2bvxbrkPUi2cpvYfDcv5ldIp7WkV8IX3+0t049w2499KpuesMGEzywz6BKRlw1isi7n+IbNhs+OpOvOz9KrhV1smSI6fcbTBt4gabBV777KfDxCcAnloQsVwxJqT9gOB0wd2lb6Gd6Y8EgGRM8QXm5hqmhVhfBrsNDqVT8z6jRbiTszwYp5YNzl69atX++y8PTp7woASIduYBA2rTkqvKU/JbmPZG81VeGQzGrbTqPxsIkGuqevmJXkw/hVP61JEAArPqSgH+h1WDk/pwEgiMnQd8LvqCJROuyrOIYn1xHQn7O9GKAw+Xx/2/jlVhLX7NIk0QsR/+kChl/Acxttp0IalUheNYF0EypYv25OzlpCSESwqfWn0tYWDFrtP2384QRyT68i3eqA5tk76s=
+  file:
+    - leader.linux.amd64
+    - leader.darwin.amd64
+  on:
+    repo: dhamidi/leader
+    tags: true
