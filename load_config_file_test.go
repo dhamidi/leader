@@ -29,6 +29,7 @@ func TestLoadConfigFile_Execute_merges_key_bindings_from_config_file(t *testing.
     "d": "date",
     "g": {
       "name": "go",
+      "loopingKeys": ["t"],
       "keys": {
         "t": "go test ."
       }
@@ -49,7 +50,7 @@ func TestLoadConfigFile_Execute_merges_key_bindings_from_config_file(t *testing.
 	keyG := keymap.LookupKey('g')
 	assert.Equal(t, "[d] date", keyD.String())
 	assert.Equal(t, "[g] <keymap go>", keyG.String())
-
 	keyGT := keyG.Children().LookupKey('t')
+	assert.True(t, keyGT.IsLooping(), "keyGT.IsLooping()")
 	assert.Equal(t, "[t] go test .", keyGT.String())
 }

@@ -27,6 +27,7 @@ type KeyMap struct {
 type KeyBinding struct {
 	key         rune
 	command     Command
+	loops       bool
 	children    *KeyMap
 	description string
 }
@@ -56,6 +57,17 @@ func (b *KeyBinding) String() string {
 
 	return fmt.Sprintf("[%c] %s", b.key, b.description)
 }
+
+// SetLooping marks this key binding as a looping key binding.  This
+// key can be pressed repeatedly to execute the same command
+// repeatedly.
+func (b *KeyBinding) SetLooping(isLooping bool) *KeyBinding {
+	b.loops = isLooping
+	return b
+}
+
+// IsLooping returns true if this is a looping key binding.
+func (b *KeyBinding) IsLooping() bool { return b.loops }
 
 // Describe sets the description for this key binding and returns this binding.
 func (b *KeyBinding) Describe(description string) *KeyBinding {

@@ -11,8 +11,9 @@ type Config struct {
 }
 
 type ConfigMap struct {
-	Name *string
-	Keys ConfigBindings
+	Name        *string
+	LoopingKeys []string
+	Keys        ConfigBindings
 }
 
 // KeyMapName returns a name suitable for use as the name of a key map.
@@ -73,10 +74,18 @@ func (cfg *Config) MergeIntoKeyMap(context *Context, keymap *KeyMap) {
 }
 
 func (cfg *Config) mergeConfigMap(context *Context, configMap *ConfigMap, keymap *KeyMap) {
+	isLoopingKey := func(key rune) bool {
+		for _, loopingKey := range configMap.LoopingKeys {
+			if key == []rune(loopingKey)[0] {
+				return true
+			}
+		}
+		return false
+	}
 	for key, binding := range configMap.Keys {
 		keyRune := ([]rune(key))[0]
 		keyBinding := NewKeyBinding(keyRune)
-
+		keyBinding.SetLooping(isLoopingKey(keyRune))
 		if binding.Child != nil {
 			existingBinding := keymap.LookupKey(keyRune)
 			if existingBinding == UnboundKey {

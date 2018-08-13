@@ -15,6 +15,7 @@ func TestConfig_ParseJSON(t *testing.T) {
     "d": "date",
     "r": {
       "name": "rake",
+      "loopingKeys": ["t"],
       "keys": {
         "t": "bundle exec rake test"
       }
@@ -29,5 +30,6 @@ func TestConfig_ParseJSON(t *testing.T) {
 	assert.Equal(t, "bundle exec rake test",
 		*(config.Root.Keys["r"].Child.Keys["t"].ShellCommand),
 	)
+	assert.Contains(t, (*config.Root.Keys["r"].Child).LoopingKeys, "t")
 	assert.Equal(t, "rake", *(config.Root.Keys["r"].Child.Name))
 }

@@ -110,3 +110,16 @@ func TestSelectMenuEntry_Execute_erases_the_current_menu_before_selecting_a_chil
 	assert.True(t, bytes.Contains(output.Bytes(), eraseMenuBuffer.Bytes()),
 		"output %q does not contain instructions %q", output, eraseMenuBuffer)
 }
+
+func TestSelectMenuEntry_Execute_keeps_executing_looping_keys_repeatedly(t *testing.T) {
+	command := newMockCommand()
+	input := bytes.NewBufferString("aaaa")
+	keymap := main.NewKeyMap("root")
+	keymap.Bind('a').Do(command.Execute).SetLooping(true)
+	context := newTestContext(t, keymap, input)
+	selectMenuEntry := main.NewSelectMenuEntry(context)
+
+	selectMenuEntry.Execute()
+
+	assert.Equal(t, 4, command.called)
+}

@@ -57,7 +57,14 @@ func (cmd *SelectMenuEntry) Execute() error {
 			if err := cmd.Terminal.Restore(); err != nil {
 				return err
 			}
-			return binding.Execute()
+
+			if binding.IsLooping() {
+				cmd.ErrorLogger.Print(binding.Execute())
+				cmd.ErrorLogger.Print(cmd.Terminal.MakeRaw())
+				continue
+			} else {
+				return binding.Execute()
+			}
 		}
 	}
 }
