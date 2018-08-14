@@ -8,7 +8,7 @@ install:
 script:
 - go get -t -v ./...
 - go test -v -race ./...
-- if [ -n "$TRAVIS_TAG" ]; then gox -os="linux darwin" -arch="amd64" -output="leader.." -ldflags "-X main.Rev=`git rev-parse --short HEAD`" -verbose ./...; fi
+- if [ -n "$TRAVIS_TAG" ]; then gox -os="linux darwin" -arch="amd64" -output="leader.{{.OS}}.{{.Arch}}" -ldflags "-X main.Rev=`git rev-parse --short HEAD`" -verbose ./...; fi
 deploy:
   provider: releases
   api_key:
