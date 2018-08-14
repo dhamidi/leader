@@ -19,3 +19,4 @@ deploy:
     - leader.darwin.amd64
   on:
     repo: dhamidi/leader
+    tags: true
