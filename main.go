@@ -1,6 +1,13 @@
 package main
 
-import "os"
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+	"strconv"
+
+	"github.com/gobuffalo/packr"
+)
 
 func main() {
 	errorHandler := NewErrorLogger(os.Stderr)
@@ -14,6 +21,13 @@ func main() {
 	if err != nil {
 		errorHandler.Fatal(err)
 	}
+
+	line, cursor := getCurrentInputLine()
+	shellParser := NewShellParser()
+	if shellParser.InQuotedString(line, cursor) {
+		os.Exit(3)
+	}
+
 	executor := NewShellExecutor("bash", "-c").Attach(tty.File())
 	rootKeyMap := NewKeyMap("root")
 	context := &Context{
@@ -34,6 +48,12 @@ func parseArgs(context *Context, args []string) {
 	if len(args) == 1 {
 		return
 	}
+
+	if args[1] == "init" {
+		initShell()
+		os.Exit(0)
+	}
+
 	for i := 0; i < len(args); i++ {
 		if args[i] == "print" {
 			context.Executor = NewPrintingExecutor(context, os.Stdout)
@@ -58,4 +78,41 @@ func navigateTo(context *Context, path []rune) {
 		context.Navigate(binding.Children())
 	}
 
+}
+
+func getCurrentInputLine() (string, int) {
+	shellName := filepath.Base(os.Getenv("SHELL"))
+	switch shellName {
+	case "zsh":
+		return getCurrentInputLineZSH()
+	case "bash":
+		return getCurrentInputLineBash()
+	default:
+		return "", 0
+	}
+}
+
+func getCurrentInputLineZSH() (string, int) {
+	line := os.Getenv("BUFFER")
+	point, _ := strconv.Atoi(os.Getenv("CURSOR"))
+	return line, point
+}
+
+func getCurrentInputLineBash() (string, int) {
+	readlineLine := os.Getenv("READLINE_LINE")
+	readlinePoint, _ := strconv.Atoi(os.Getenv("READLINE_POINT"))
+	return readlineLine, readlinePoint
+}
+
+func initShell() {
+	initFiles := packr.NewBox("./assets")
+	shellName := filepath.Base(os.Getenv("SHELL"))
+	switch shellName {
+	case "zsh":
+		fmt.Printf("%s\n", initFiles.String("leader.zsh.sh"))
+	case "bash":
+		fmt.Printf("%s\n", initFiles.String("leader.bash.sh"))
+	default:
+		fmt.Fprintf(os.Stderr, "Shell %s not supported!\n", shellName)
+	}
 }

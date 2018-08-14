@@ -70,30 +70,19 @@ Leader tries to load a file called `.leaderrc` from your current working directo
 
 The closer a file is to your working directory, the more important keybindings in that file are.  For example, binding `g b` to `go build .` in `~/.leaderrc` and to `gulp build` in `$HOME/projects/project-using-gulp` will make `leader` prefer running `gulp build` when in your frontend project's directory and `go build` elsewhere.
 
-# BASH integration
 
-To trigger `leader` when pressing `\` in bash, run the following command and add it to your bash initialization file:
+# Installation
 
-    bind -x '"\\":leader'
-    bind -x '"\C-h":eval $(leader print)'
+Download the `leader` binary from [here](https://github.com/dhamidi/leader/releases) and put it somewhere on your `$PATH`.
 
-Now every time you press `\`, `leader` will be started.
+Add the following to your `~/.bashrc` or `~/.zshrc`:
 
-Pressing `C-h` also invokes `leader`, however instead of actually running a command `leader` prints it to stdout where the shell interprets it as a command to run.  This is necessary for running commands that modify the current shell's state, such as `cd`.
+```
+eval "$(leader init)"
+```
 
-# ZSH integration
-
-To trigger `leader` when pressing `\` in zsh, run the following command and add it to your zsh initialization file:
-
-    bindkey -s '\\' "leader\C-j"
-    bindkey -s '\C-h' 'eval $(leader print)\C-j'
-
-Now every time you press `\`, `leader` will be started.
-
-Pressing `C-h` also invokes `leader`, however instead of actually running a command `leader` prints it to stdout where the shell interprets it as a command to run.  This is necessary for running commands that modify the current shell's state, such as `cd`.
+This installs leader and binds it to `\`.
 
 # Execution environment
 
-All commands found in `.leaderrc` are currently passed as arguments to `bash -c`.
-
-In order to support modifying the environment of the current shell, `leader` also supports _printing_ commands instead of running them.
+All commands triggered by leader are run in the context of the current shell.  This means that `cd`, `pushd` and other commands that modify the state of the current shell work without problems in your `.leaderrc`.
