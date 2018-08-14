@@ -2,21 +2,20 @@ language: go
 go:
 - '1.10'
 before_install:
-  - go get github.com/mitchellh/gox
+- go get github.com/mitchellh/gox
 install:
-  - # skip
+- # skip
 script:
-  - go get -t -v ./...
-  - go test -v -race ./...
-  - if [ -n "$TRAVIS_TAG" ]; then gox -os="linux darwin" -arch="amd64" -output="leader.." -ldflags "-X main.Rev=`git rev-parse --short HEAD`" -verbose ./...; fi
+- go get -t -v ./...
+- go test -v -race ./...
+- if [ -n "$TRAVIS_TAG" ]; then gox -os="linux darwin" -arch="amd64" -output="leader.." -ldflags "-X main.Rev=`git rev-parse --short HEAD`" -verbose ./...; fi
 deploy:
   provider: releases
-  skip_cleanup: true
   api_key:
-    secure: "a63rUvww1wHco58Fw30NKKrvS9eLAiUm74sTjD68jsYjHsT++Hdrl/En/Sggh+++bENVpcGKbta5n+koWOmoD5eZipvtpY9AYCOjhWLSfcrLpPu3sPt1w743DrgPbUdzO+ix/WARhXfoA0H6IH1Vq1r5OdQ4oeuxsrs9Ys0LfaYu3NYU7r8SeqQO842BejkCiADxmrLrL3FDr7xdKZEJpj3gk6g56/23g/CSYgbLHC7OoNLW3O5b8HbTgnwS3H+YYHbgRZ1a6GdaXJ5YVZ/KrnlQzUn42cFp5tPXTKYFSK1Azbgmz96mWo1oZxoHTNK5Z7pV3MKmw+zL/NyWLCq57WFWItBhQAWMrQoonvdoZ04PqT7lJjmGcs/rCYRBYlS1gGwUzUw0onBgEFM7JjfTZ5mzt+ow+AKKdIja3EBjmXj5DnnlHpSQCtAAmk2TT65H6qFGUbArfDCmyYwoo7OZxQQeME6QD4+gelBxGvdqSrwM6exE4K8YxvLmrAUOOGXuG8zSZZYY0Km9864RrqmEpzceJiIMyXq9hMhWin6z3PEb2Mh5Ll1d57qOT1scAgfWdmAMzR2zCGAWnyFphBKz8QU2GoBW4EmnPV0XxWwKdQh/prgku+7fLX4wlKNxbr/lGEVVCGpezgrLnztalkFVjpeVIzUZ8fJH6kxEX2ulmak="
+    secure: D9M8SwkAGCWamL81sdOL5OsBb7bUgTxXhRjm3CqYsKUmEMzNFyZpFIR7xqIehzs6gGcTvCXkrPjoaD1iTCE0YyOaFNZEX+7pPH/foceWmA4e5ctY9coubReThsQhlqXrPRba2/MCdxqysLVZnbZBblx2ndEh1FqdyuD2KtWVwV+XO2zSkGaPUwvpP0ZSCgF6G2Nt9S1/uUH7GL6YBttBQdT5ce7rvwxb7NhrSCamivaUJJz33G44OkuEhh2Oi1u4+GLWGHiEBF2S435rHJYKomxByxxBcUkOnvrrXi+P4ZCm/C6HaO+4wLoy0XXsYN8VzYObHBWkLFrXWwLA5b9rm6Rzu6zFiXus9yV9ZCncZHX2JqoMkGVE/qr/VtUi8E0DDuso9ugoaod3GmXrYTZnONwJMXtTJDnmTJUIJ0f5tFwlBFgxdek41BYevR2+WQ8JOa6Ei4BIbz7Q2lASEpV2pYPKVYpqhs2Ggk8EoZcENjTVFQxfQThv6Tz6fy5QRQ/DIyEOHjZZnTPgfI4oz933UPKApiBn5xcLlmJ0/55kRzelrzVtrYe0+66NJNlGAh02JzbD4GqB+mLvDrQT88EwgN6FWbWho6QMlzhvgqb9SH1Kf4cdpt6EzDGqV4atizSrYUsYJNuQWSGg4b5wEphV9WJRtRG6ycY7KQ1U29u3F0w=
+  skip_cleanup: true
   file:
     - leader.linux.amd64
     - leader.darwin.amd64
   on:
     repo: dhamidi/leader
-    tags: true
