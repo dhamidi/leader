@@ -111,6 +111,41 @@ func TestSelectMenuEntry_Execute_erases_the_current_menu_before_selecting_a_chil
 		"output %q does not contain instructions %q", output, eraseMenuBuffer)
 }
 
+func TestSelectMenuEntry_Execute_erases_the_current_menu_before_running_a_command(t *testing.T) {
+	keymap := main.NewKeyMap("root")
+	input := bytes.NewBufferString("ab")
+	keymap.Bind('a').Children().Rename("b").DefineKey('b', main.DoNothing)
+	context := newTestContext(t, keymap, input)
+	output := bytes.NewBufferString("")
+	context.Terminal.OutputTo(output)
+	selectMenuEntry := main.NewSelectMenuEntry(context)
+
+	selectMenuEntry.Execute()
+
+	expectedViews := []main.View{
+		main.NewBreadcrumbsView([]string{"root"}),
+		main.NewMenuView([]*main.MenuEntry{
+			{Key: 'a', Label: "b"},
+		}),
+		main.NewBreadcrumbsView([]string{"root", "b"}),
+		main.NewMenuView([]*main.MenuEntry{
+			{Key: 'b', Label: ""},
+		}),
+	}
+	outputBuffer := bytes.NewBufferString("")
+	expectedViews[0].Render(outputBuffer)
+	expectedViews[1].Render(outputBuffer)
+	expectedViews[0].Erase(outputBuffer)
+	expectedViews[1].Erase(outputBuffer)
+	expectedViews[2].Render(outputBuffer)
+	expectedViews[3].Render(outputBuffer)
+	expectedViews[2].Erase(outputBuffer)
+	expectedViews[3].Erase(outputBuffer)
+
+	assert.True(t, bytes.Contains(output.Bytes(), outputBuffer.Bytes()),
+		"output %q does not contain instructions %q", output, outputBuffer)
+}
+
 func TestSelectMenuEntry_Execute_keeps_executing_looping_keys_repeatedly(t *testing.T) {
 	command := newMockCommand()
 	input := bytes.NewBufferString("aaaa")

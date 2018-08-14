@@ -46,13 +46,13 @@ func (cmd *SelectMenuEntry) Execute() error {
 		}
 		binding := cmd.CurrentKeyMap.LookupKey(key)
 		cmd.PushKey(key)
+		if err := breadcrumbs.Erase(cmd.Terminal); err != nil {
+			return err
+		}
+		if err := menu.Erase(cmd.Terminal); err != nil {
+			return err
+		}
 		if binding.HasChildren() {
-			if err := breadcrumbs.Erase(cmd.Terminal); err != nil {
-				return err
-			}
-			if err := menu.Erase(cmd.Terminal); err != nil {
-				return err
-			}
 			cmd.Navigate(binding.Children())
 		} else {
 			if err := cmd.Terminal.Restore(); err != nil {
