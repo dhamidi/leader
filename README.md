@@ -1,4 +1,8 @@
+[![Build Status](https://travis-ci.com/dhamidi/leader.svg?branch=master)](https://travis-ci.com/dhamidi/leader)
+
 # Description
+
+![](./assets/logo.png)
 
 VIM's leader key for your terminal!  Using leader you can launch predefined commands using a short sequence of key presses instead of having to type out the whole command.
 
