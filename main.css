@@ -1,0 +1,30 @@
+* {
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+.main {
+    max-width: 960px;
+    margin: auto;
+}
+
+.headline {
+    font-family: serif;
+}
+
+.headline--centered {
+    text-align: center;
+}
+
+.code, .keypress {
+    background: #eee;
+    padding: 5px;
+    line-height: 2;
+    font-size: 16px;
+    font-family: monospace;
+}
+.code--block {
+    padding: 5px;
+    font-size: 16px;
+    line-height: normal;
+}
