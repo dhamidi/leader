@@ -1,9 +1,11 @@
-- [x] Support multiple configuration files (check everything upwards from $PWD until the home directory is hit.  Always parse `~/.leaderrc`)
-- [x] Tests, because prototyping is basically done now and I don't want to throw away the prototype (it works too well)
-- [x] Allow navigation to a previous menu using backspace, up, ctrl-b and left
-- [x] Sort menu entries alphabetically
-- [ ] Integration with common build tools to autogenerate parts of `.leaderrc`
-- [x] Fix running interactive commands
-- [x] Add looping keys, i.e. if `a b` is set to looping, one can press `a b b b b` ad inifinitum to keep running the command bound to `a b`
-- [x] Run all commands in the shell by default (default to `bash`, allow configuration in `.leaderrc`)
-- [ ] Allow dynamic generation of menus (e.g. from a list of git branches)
+# Features
+
+## `leader import`
+
+*Goals*:
+- Make it easier for new users to get a useful configuration
+- Integrate with existing tools to operate them more efficiently
+
+*Example applications*:
+- In an existing Ruby on Rails project, run `leader import rake` to automatically generate sensible menus from all rake tasks in the project.  Rake namespaces will be converted to key maps.  Naming collisions caused by nested namespaces/tasks are resolved by creating a nested key map keyed on the first letter of the namespace/task until no more conflicts are found.
+- In a project using `npm`, run `leader import npm` to create a task for each of the scripts contained in `package.json`'s scripts section.
