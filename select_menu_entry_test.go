@@ -5,15 +5,53 @@ import (
 	"io"
 	"testing"
 
+	"github.com/Nerdmaster/terminal"
 	"github.com/dhamidi/leader"
 	"github.com/stretchr/testify/assert"
 )
 
-func newTestContext(t *testing.T, root *main.KeyMap, input io.Reader) *main.Context {
-	testTerminal, err := main.NewTerminalTTY()
-	assert.NoError(t, err)
+type testTerminal struct {
+	In        io.Reader
+	Out       io.Writer
+	KeyReader *terminal.KeyReader
+}
+
+func newTestTerminal() *testTerminal {
+	return &testTerminal{
+		In:  bytes.NewBufferString(""),
+		Out: bytes.NewBufferString(""),
+	}
+}
+
+func (term *testTerminal) MakeRaw() error              { return nil }
+func (term *testTerminal) Restore() error              { return nil }
+func (term *testTerminal) Write(p []byte) (int, error) { return term.Out.Write(p) }
+func (term *testTerminal) OutputTo(out io.Writer) *testTerminal {
+	term.Out = out
+	return term
+}
+func (term *testTerminal) InputFrom(in io.Reader) *testTerminal {
+	term.In = in
+	term.KeyReader = terminal.NewKeyReader(in)
+	return term
+}
+
+func (term *testTerminal) ReadKey() (rune, error) {
+	key, err := term.KeyReader.ReadKeypress()
+	if err != nil {
+		return terminal.KeyCtrlC, nil
+	}
+	return key.Key, nil
+}
+
+func newTestContext(t *testing.T, root *main.KeyMap, input io.Reader, output io.Writer) *main.Context {
+	testTerminal := newTestTerminal().InputFrom(input)
+	if output != nil {
+		testTerminal.OutputTo(output)
+	}
+
 	return &main.Context{
-		Terminal:      testTerminal.InputFrom(input).OutputTo(bytes.NewBufferString("")),
+		Terminal:      testTerminal,
 		CurrentKeyMap: root,
 	}
 }
@@ -22,7 +60,7 @@ func TestSelectMenuEntry_Execute_changes_current_key_map(t *testing.T) {
 	keymap := main.NewKeyMap("root")
 	input := bytes.NewBufferString("a")
 	keymap.Bind('a').Children().Rename("b").DefineKey('b', main.DoNothing)
-	context := newTestContext(t, keymap, input)
+	context := newTestContext(t, keymap, input, nil)
 	selectMenuEntry := main.NewSelectMenuEntry(context)
 	selectMenuEntry.Execute()
 	assert.Equal(t, "b", context.CurrentKeyMap.Name())
@@ -33,7 +71,7 @@ func TestSelectMenuEntry_Execute_runs_command_associated_with_binding(t *testing
 	command := newMockCommand()
 	input := bytes.NewBufferString("ab")
 	keymap.Bind('a').Children().Rename("b").DefineKey('b', command.Execute)
-	context := newTestContext(t, keymap, input)
+	context := newTestContext(t, keymap, input, nil)
 
 	selectMenuEntry := main.NewSelectMenuEntry(context)
 	selectMenuEntry.Execute()
@@ -47,7 +85,7 @@ func TestSelectMenuEntry_Execute_gives_does_not_execute_command_on_binding_with_
 	command := newMockCommand()
 	input := bytes.NewBufferString("ab")
 	keymap.Bind('a').Do(command.Execute).Children().DefineKey('b', main.DoNothing)
-	context := newTestContext(t, keymap, input)
+	context := newTestContext(t, keymap, input, nil)
 
 	selectMenuEntry := main.NewSelectMenuEntry(context)
 	selectMenuEntry.Execute()
@@ -59,10 +97,9 @@ func TestSelectMenuEntry_Execute_gives_does_not_execute_command_on_binding_with_
 func TestSelectMenuEntry_Execute_displays_breadscrumbs_for_the_current_path(t *testing.T) {
 	keymap := main.NewKeyMap("root")
 	input := bytes.NewBufferString("a")
-	keymap.Bind('a').Children().Rename("a").DefineKey('b', main.DoNothing)
-	context := newTestContext(t, keymap, input)
 	output := bytes.NewBufferString("")
-	context.Terminal.OutputTo(output)
+	keymap.Bind('a').Children().Rename("a").DefineKey('b', main.DoNothing)
+	context := newTestContext(t, keymap, input, output)
 	selectMenuEntry := main.NewSelectMenuEntry(context)
 
 	selectMenuEntry.Execute()
@@ -75,8 +112,7 @@ func TestSelectMenuEntry_Execute_displays_the_current_keymap_as_a_menu(t *testin
 	keymap.Bind('b').Do(main.DoNothing).Describe("do b")
 	input := bytes.NewBufferString("")
 	output := bytes.NewBufferString("")
-	context := newTestContext(t, keymap, input)
-	context.Terminal.OutputTo(output)
+	context := newTestContext(t, keymap, input, output)
 
 	selectMenuEntry := main.NewSelectMenuEntry(context)
 	selectMenuEntry.Execute()
@@ -94,9 +130,8 @@ func TestSelectMenuEntry_Execute_erases_the_current_menu_before_selecting_a_chil
 	keymap := main.NewKeyMap("root")
 	input := bytes.NewBufferString("a")
 	keymap.Bind('a').Children().Rename("b").DefineKey('b', main.DoNothing)
-	context := newTestContext(t, keymap, input)
 	output := bytes.NewBufferString("")
-	context.Terminal.OutputTo(output)
+	context := newTestContext(t, keymap, input, output)
 	selectMenuEntry := main.NewSelectMenuEntry(context)
 
 	selectMenuEntry.Execute()
@@ -115,9 +150,8 @@ func TestSelectMenuEntry_Execute_erases_the_current_menu_before_running_a_comman
 	keymap := main.NewKeyMap("root")
 	input := bytes.NewBufferString("ab")
 	keymap.Bind('a').Children().Rename("b").DefineKey('b', main.DoNothing)
-	context := newTestContext(t, keymap, input)
 	output := bytes.NewBufferString("")
-	context.Terminal.OutputTo(output)
+	context := newTestContext(t, keymap, input, output)
 	selectMenuEntry := main.NewSelectMenuEntry(context)
 
 	selectMenuEntry.Execute()
@@ -151,7 +185,7 @@ func TestSelectMenuEntry_Execute_keeps_executing_looping_keys_repeatedly(t *test
 	input := bytes.NewBufferString("aaaa")
 	keymap := main.NewKeyMap("root")
 	keymap.Bind('a').Do(command.Execute).SetLooping(true)
-	context := newTestContext(t, keymap, input)
+	context := newTestContext(t, keymap, input, nil)
 	selectMenuEntry := main.NewSelectMenuEntry(context)
 
 	selectMenuEntry.Execute()

@@ -15,7 +15,7 @@ func TestGoBack_Execute_selects_the_previously_selected_keymap(t *testing.T) {
 		Bind('b').Children().Rename("b").
 		Bind('c').Describe("c")
 	input := bytes.NewBufferString("ab")
-	context := newTestContext(t, keymap, input)
+	context := newTestContext(t, keymap, input, nil)
 	selectMenuEntry := main.NewSelectMenuEntry(context)
 	selectMenuEntry.Execute()
 	goBack := main.NewGoBack(context)

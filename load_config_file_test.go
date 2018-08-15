@@ -41,7 +41,7 @@ func TestLoadConfigFile_Execute_merges_key_bindings_from_config_file(t *testing.
 	defer os.Remove(configFile.Name())
 
 	keymap := main.NewKeyMap("root")
-	context := newTestContext(t, keymap, bytes.NewBufferString(""))
+	context := newTestContext(t, keymap, bytes.NewBufferString(""), nil)
 
 	loadConfig := main.NewLoadConfigFile(context, configFile.Name())
 	assert.NoError(t, loadConfig.Execute(), "loadConfig.Execute()")

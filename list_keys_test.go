@@ -18,8 +18,7 @@ func TestListKeys_Execute_prints_all_key_bindings(t *testing.T) {
 	keymapBB.Bind('b').Describe("run 'b b b'")
 
 	output := bytes.NewBufferString("")
-	context := newTestContext(t, keymap, bytes.NewBufferString(""))
-	context.Terminal.OutputTo(output)
+	context := newTestContext(t, keymap, bytes.NewBufferString(""), output)
 
 	listKeys := main.NewListKeys(context)
 	listKeys.Execute()

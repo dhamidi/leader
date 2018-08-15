@@ -17,7 +17,7 @@ func main() {
 			errorHandler.Print(err)
 		}
 	}()
-	tty, err := NewTerminalTTY()
+	tty, err := NewTTY()
 	if err != nil {
 		errorHandler.Fatal(err)
 	}

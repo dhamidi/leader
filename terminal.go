@@ -9,8 +9,16 @@ import (
 	"github.com/Nerdmaster/terminal"
 )
 
-// Terminal represents a TTY
-type Terminal struct {
+// Terminal is a terminal device.
+type Terminal interface {
+	io.Writer
+	MakeRaw() error
+	Restore() error
+	ReadKey() (rune, error)
+}
+
+// TTY represents a TTY and implements Terminal
+type TTY struct {
 	fd            int
 	file          *os.File
 	out           io.Writer
@@ -18,13 +26,13 @@ type Terminal struct {
 	keyReader     *terminal.KeyReader
 }
 
-// NewTerminalTTY returns a terminal connected to /dev/tty.
-func NewTerminalTTY() (*Terminal, error) {
+// NewTTY returns a terminal connected to /dev/tty.
+func NewTTY() (*TTY, error) {
 	devTTY, err := os.OpenFile("/dev/tty", os.O_RDWR, 0644)
 	if err != nil {
-		return nil, fmt.Errorf("NewTerminalTTY: %s", err)
+		return nil, fmt.Errorf("NewTTY: %s", err)
 	}
-	tty := &Terminal{
+	tty := &TTY{
 		fd:   int(devTTY.Fd()),
 		out:  devTTY,
 		file: devTTY,
@@ -36,7 +44,7 @@ func NewTerminalTTY() (*Terminal, error) {
 
 // File returns the file object connected to this terminal (or nil if
 // this terminal is not connected to a file)
-func (term *Terminal) File() *os.File {
+func (term *TTY) File() *os.File {
 	_, connectedToFile := term.out.(*os.File)
 	if !connectedToFile {
 		return nil
@@ -45,7 +53,7 @@ func (term *Terminal) File() *os.File {
 }
 
 // MakeRaw puts this terminal into raw mode.
-func (term *Terminal) MakeRaw() error {
+func (term *TTY) MakeRaw() error {
 	originalState, err := terminal.MakeRaw(term.fd)
 	if err != nil {
 		return fmt.Errorf("terminal.GetState: %s", err)
@@ -55,24 +63,24 @@ func (term *Terminal) MakeRaw() error {
 }
 
 // OutputTo to sets up this terminal to write its output into the provided io.Writer.
-func (term *Terminal) OutputTo(out io.Writer) *Terminal {
+func (term *TTY) OutputTo(out io.Writer) *TTY {
 	term.out = out
 	return term
 }
 
 // InputFrom sets up this terminal to read its input from the provided io.Reader.
-func (term *Terminal) InputFrom(src io.Reader) *Terminal {
+func (term *TTY) InputFrom(src io.Reader) *TTY {
 	term.keyReader = terminal.NewKeyReader(src)
 	return term
 }
 
 // Write implements io.Writer by writing bytes to the underlying terminal.
-func (term *Terminal) Write(data []byte) (int, error) {
+func (term *TTY) Write(data []byte) (int, error) {
 	return term.out.Write(data)
 }
 
 // Restore restores the original terminal state
-func (term *Terminal) Restore() error {
+func (term *TTY) Restore() error {
 	if term.originalState == nil {
 		return nil
 	}
@@ -84,7 +92,7 @@ func (term *Terminal) Restore() error {
 }
 
 // ReadKey reads a single key code from the terminal
-func (term *Terminal) ReadKey() (rune, error) {
+func (term *TTY) ReadKey() (rune, error) {
 	keypress, err := term.keyReader.ReadKeypress()
 	ctrlC := rune('\003')
 	if err != nil {
