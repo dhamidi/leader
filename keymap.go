@@ -94,6 +94,16 @@ func (b *KeyBinding) Do(cmd Command) *KeyBinding {
 	return b
 }
 
+// Key returns the key this key binding is bound to.
+func (b *KeyBinding) Key() rune {
+	return b.key
+}
+
+// Description returns the description of this key binding.
+func (b *KeyBinding) Description() string {
+	return b.description
+}
+
 // NewKeyMap initializes a new keymap named name.
 //
 // The map has no initial bindings.

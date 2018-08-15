@@ -54,6 +54,11 @@ func parseArgs(context *Context, args []string) {
 		os.Exit(0)
 	}
 
+	if args[1] == "list-keys" {
+		context.ErrorLogger.Print(NewListKeys(context).Execute())
+		os.Exit(0)
+	}
+
 	for i := 0; i < len(args); i++ {
 		if args[i] == "print" {
 			context.Executor = NewPrintingExecutor(context, os.Stdout)
