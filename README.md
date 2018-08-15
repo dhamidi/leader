@@ -1,32 +1,29 @@
 [![Build Status](https://travis-ci.com/dhamidi/leader.svg?branch=master)](https://travis-ci.com/dhamidi/leader)
 
-# Description
-
 ![](./assets/logo.png)
 
 VIM's leader key for your terminal!  Using leader you can launch predefined commands using a short sequence of key presses instead of having to type out the whole command.
 
 For example, using Leader you could map pressing `g` followed by `c` to running `git commit`.
 
-# Features
 
-- generates a keymap from your Makefile, Rakefile and package.json
+# Installation
 
-# Key bindings
+Download the `leader` binary from [here](https://github.com/dhamidi/leader/releases) and put it somewhere on your `$PATH`.
 
-The following key bindings are processed by `leader` itself and cannot be remapped:
+Add the following to your `~/.bashrc` or `~/.zshrc`:
 
-| Key         | Function                     |
-| ---         | --------                     |
-| `Ctrl+C`    | Exit `leader`                |
-| `Ctrl+B`    | Go back to the previous menu |
-| `Up`        | Go back to the previous menu |
-| `Left`      | Go back to the previous menu |
-| `Backspace` | Go back to the previous menu |
+```
+eval "$(leader init)"
+```
+
+This installs leader and binds it to `\`.
 
 # Configuration
 
-Here is an example configuration file, containing shortcuts useful when developing with Golang:
+Leader is configured through JSON files in various directories.
+
+To get started, put the JSON listed below into `~/.leaderrc`.  This example configuration file contains shortcuts useful when developing with Golang:
 
 ```
 {
@@ -62,7 +59,7 @@ A keymap's `name` is used to as a label to indicate which keymap the user is cur
 
 ## Looping keys
 
-If a key occurs in the list given under a keymap's `loopingKeys` entry, this key can be pressed repeatedly to rnu the same command again.
+If a key occurs in the list given under a keymap's `loopingKeys` entry, this key can be pressed repeatedly to run the same command again.
 
 ## Load order
 
@@ -70,18 +67,27 @@ Leader tries to load a file called `.leaderrc` from your current working directo
 
 The closer a file is to your working directory, the more important keybindings in that file are.  For example, binding `g b` to `go build .` in `~/.leaderrc` and to `gulp build` in `$HOME/projects/project-using-gulp` will make `leader` prefer running `gulp build` when in your frontend project's directory and `go build` elsewhere.
 
-
-# Installation
-
-Download the `leader` binary from [here](https://github.com/dhamidi/leader/releases) and put it somewhere on your `$PATH`.
-
-Add the following to your `~/.bashrc` or `~/.zshrc`:
+# Usage
 
 ```
-eval "$(leader init)"
+leader                # run commands in a new shell through an interactive menu
+leader print          # show interactive menu, but print commands instead of running them
+leader list-keys      # list all key bindings
+leader init           # print shell initialization code for $SHELL.
 ```
 
-This installs leader and binds it to `\`.
+# Key bindings
+
+The following key bindings are processed by `leader` itself and cannot be remapped:
+
+| Key         | Function                     |
+| ---         | --------                     |
+| `Ctrl+C`    | Exit `leader`                |
+| `Ctrl+B`    | Go back to the previous menu |
+| `Up`        | Go back to the previous menu |
+| `Left`      | Go back to the previous menu |
+| `Backspace` | Go back to the previous menu |
+
 
 # Execution environment
 
