@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en" xml:lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Leader{{if .Title}}| {{.Title}}{{end}}</title>
+    <link rel="stylesheet" href="/main.css">
+  </head>
+  <body>
+    <nav class="navigation">
+    </nav>
+    <main class="main">
+      {{template "main" .}}
+    </main>
+  </body>
+</html>
