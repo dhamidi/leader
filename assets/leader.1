@@ -1,0 +1,161 @@
+.TH LEADER 1
+.SH NAME
+leader \- interactive command launcher
+.SH SYNOPSIS
+.nf
+\fBleader\fP [\fI@KEYS\fR]
+\fBleader\fP print [\fI@KEYS\fR]
+\fBleader\fP list-keys
+\fBleader\fP init
+.fi
+.SH DESCRIPTION
+leader presents an interactive, possibly nested menu in the user's terminal for quickly launching commands by pressing unmodified keys.
+It is similar to VIM's leader key in that it provides a single key to press in order to initiate a key binding.
+.PP
+The menus used by leader are configured through simple JSON files that can be located multiple directories and are merged before presenting a menu.
+This makes it easy to specify project-specific menus based on the current working directory.
+.PP
+When \fIleader\fR is invoked while the cursor of the current input line in the shell is inside a single- or double quoted string
+\fIleader\fR leader exits immediately.
+The shell functions that are installed by leader detect this condition and insert a literal backslash (\fI\\\fR) at the current cursor position.
+.sp
+.TP
+\fBleader\fR
+launches the interactive menu and runs the selected command in a new shell
+.TP
+\fBleader\fR print
+also launches the interactive menu, but instead of running a command it prints the shell command that needs to run in order to launch the selected command.   This is useful for running commands in the context of the current shell.
+.TP
+\fBleader\fR list-keys
+prints all configured key bindings
+.TP
+\fBleader\fR init
+displays the shell initialization code for the shell indicated by the \fBSHELL\fR environment variable.
+Currently
+.BR bash (1)
+and
+.BR zsh (1)
+are supported.
+.SH OPTIONS
+.TP
+\fB@\fR[\fIKEYS\fR]
+If \fIKEYS\fR is provided, leader starts the menu at the position of \fIKEYS\fR as if the user had pressed those keys.
+For example, running \fIleader @t\fR is the same as running \fIleader\fR and pressing \fIt\fR.
+.SH KEY BINDINGS
+.PP
+Key bindings are configured in \fB.leaderrc\fR (see \fIFILES\fR).
+.PP
+The following key bindings are used by \fIleader\fR itself for internal functions:
+.TP
+.B "Ctrl\+C"
+.br
+Exits the program without selecting anything.
+.TP
+.B "Ctrl\+B, Up, Left, Backspace"
+.br
+Return to the previously selected menu.
+.SH EXIT STATUS
+.TP
+.B 0
+Normal exit.
+.TP
+.B 1
+One of the keys passed with @\fIKEYS\fR is not bound to anything.
+.TP
+.B 2
+One of the keys passed with @\fIKEYS\fR does not have any nested key bindings.
+.TP
+.B 3
+\fIleader\fR was invoked while the cursor on the current input line was inside a quoted string.
+.SH ENVIRONMENT
+.TP
+.B SHELL
+The value of \fBSHELL\fR is inspected when running \fIleader\fR to determine two things:
+.RS
+.PP
+The current input line and the cursor position therein.
+This is necessary to determine whether \fIleader\fR is invoked within a quoted string in order to exit early.
+.PP
+Which shell configuration code to print for installing \fIleader\fR into the shell.
+.RE
+.SH FILES
+.TP
+.B $PWD/.leaderrc
+.RS
+.PP
+Every time \fIleader\fR is invoked, it parses a JSON file named \fB.leaderrc\fR in the current directory.
+.PP
+After parsing such a file in the current directory, it recursively checks all parent directories for such a file too, until it reaches the root directory.
+.RE
+.TP
+.B ~/.leaderrc
+.RS
+.PP
+After recursively scanning all parent directories of the current working directory, \fIleader\fR always parses the file \fB~/.leaderrc\fR.
+.PP
+This ensures that there is always at least one configuration file that is being processed by \fIleader\fR regardless of the current working directory.
+.RE
+.SH BUGS
+None known so far.
+.SH EXAMPLE
+.PP
+The following is an example \fB.leaderrc\fR file that illustrates all features supported by leader.
+A detailed explanation follows after the source code example.
+.SS Contents of .leaderrc
+\&
+.nf
+{
+  "keys": {
+    "h": {
+      "name": "help",
+      "keys": {
+        "m": "man leader"
+      }
+    },
+    "g": {
+      "name": "git",
+      "loopingKeys": ["s"],
+      "keys": {
+        "p": "git push",
+        "P": "git pull",
+        "s": "git status"
+      }
+    }
+  }
+}
+.fi
+.SS Explanation
+.PP
+The configuration shown above configures \fIleader\fR to present the following interactive menu:
+.sp
+.nf
+    root
+    [h] help
+    [g] git
+.fi
+.PP
+After pressing \fIg\fR, the submenu for \fIgit\fR is shown:
+.sp
+.nf
+    root > git
+    [p] git push
+    [P] git pull
+    [s] git status
+.fi
+.PP
+Pressing any of the listed keys invokes the command in listed next to it.
+After invoking the command control is returned to the shell.
+.PP
+The only exception is pressing \fIs\fR in this menu.  Since \fIs\fR appears in \fB.keys.g.loopingKeys\fR, it can be pressed repeatedly:
+Each time it is pressed \fIgit status\fR is invoked and \fIleader\fR presents the same menu again.
+.PP
+The example session also show the significance of the \fBname\fR entry in the JSON object:
+the value associated with this key is used to display the path to the current menu.
+
+.SH AUTHOR
+Dario Hamidi <dario.hamidi@gmail.com>
+.PP
+Please file any specific issues that you encounter at https://github.com/dhamidi/leader.
+.SH "SEE ALSO"
+.BR fzf (1)
+.BR tmenu (1)
