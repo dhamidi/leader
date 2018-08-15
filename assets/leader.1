@@ -7,6 +7,7 @@ leader \- interactive command launcher
 \fBleader\fP print [\fI@KEYS\fR]
 \fBleader\fP list-keys
 \fBleader\fP init
+\fBleader\fP help
 .fi
 .SH DESCRIPTION
 leader presents an interactive, possibly nested menu in the user's terminal for quickly launching commands by pressing unmodified keys.
@@ -21,13 +22,13 @@ The shell functions that are installed by leader detect this condition and inser
 .sp
 .TP
 \fBleader\fR
-launches the interactive menu and runs the selected command in a new shell
+launches the interactive menu and runs the selected command in a new shell.
 .TP
 \fBleader\fR print
 also launches the interactive menu, but instead of running a command it prints the shell command that needs to run in order to launch the selected command.   This is useful for running commands in the context of the current shell.
 .TP
 \fBleader\fR list-keys
-prints all configured key bindings
+prints all configured key bindings.
 .TP
 \fBleader\fR init
 displays the shell initialization code for the shell indicated by the \fBSHELL\fR environment variable.
@@ -36,6 +37,9 @@ Currently
 and
 .BR zsh (1)
 are supported.
+.TP
+\fBleader\fR help
+displays this help.
 .SH OPTIONS
 .TP
 \fB@\fR[\fIKEYS\fR]

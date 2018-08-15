@@ -73,7 +73,8 @@ The closer a file is to your working directory, the more important keybindings i
 leader                # run commands in a new shell through an interactive menu
 leader print          # show interactive menu, but print commands instead of running them
 leader list-keys      # list all key bindings
-leader init           # print shell initialization code for $SHELL.
+leader init           # print shell initialization code for $SHELL
+leader help           # display leader's man page
 ```
 
 # Key bindings

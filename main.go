@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strconv"
 
@@ -59,6 +61,11 @@ func parseArgs(context *Context, args []string) {
 		os.Exit(0)
 	}
 
+	if args[1] == "help" {
+		showHelp(context)
+		os.Exit(0)
+	}
+
 	for i := 0; i < len(args); i++ {
 		if args[i] == "print" {
 			context.Executor = NewPrintingExecutor(context, os.Stdout)
@@ -83,6 +90,14 @@ func navigateTo(context *Context, path []rune) {
 		context.Navigate(binding.Children())
 	}
 
+}
+
+func showHelp(context *Context) {
+	assets := packr.NewBox("./assets")
+	man := exec.Command("man", "-l", "-")
+	man.Stdout = os.Stdout
+	man.Stdin = bytes.NewBufferString(assets.String("leader.1"))
+	man.Run()
 }
 
 func getCurrentInputLine() (string, int) {
