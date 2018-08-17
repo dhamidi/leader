@@ -1,19 +1,5 @@
 {
   "keys": {
-    "/": {
-      "name": "file system",
-      "loopingKeys": ["u", "d"],
-      "keys": {
-        "u": "pushd .. >/dev/null && pwd",
-        "d": "popd >/dev/null && pwd"
-      }
-    },
-    "d": {
-      "name": "directory",
-      "keys": {
-        ".": "cd ..; stty sane; pwd; exec bash"
-       }
-    },
     "g": {
       "name": "go",
       "loopingKeys": ["t"],
