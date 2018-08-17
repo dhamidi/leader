@@ -6,6 +6,7 @@ VIM's leader key for your terminal!  Using leader you can launch predefined comm
 
 For example, using Leader you could map pressing `g` followed by `c` to running `git commit`.
 
+[![asciicast](https://asciinema.org/a/j1SIx0G9cQ5q8M8wf3SZeu5OW.png)](https://asciinema.org/a/j1SIx0G9cQ5q8M8wf3SZeu5OW)
 
 # Installation
 
