@@ -16,7 +16,20 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://dhamidi.github.io/leader/guides/git/</guid>
-      <description> Integrating Git </description>
+      <description>Integrating Git Using git from the command line can be quite tedious, especially when frequently having to run the same commands. Users of emacs often use magit and the setup presented here can best be thought of as an approximation of magit&amp;rsquo;s functionality outside of emacs.
+Configuration Add the following to your ~/.leaderrc:
+{ &amp;quot;keys&amp;quot;: { &amp;quot;g&amp;quot;: { &amp;quot;name&amp;quot;: &amp;quot;git&amp;quot;, &amp;quot;loopingKeys&amp;quot;: [&amp;quot;s&amp;quot;], &amp;quot;keys&amp;quot;: { &amp;quot;p&amp;quot;: &amp;quot;git pull&amp;quot;, &amp;quot;P&amp;quot;: &amp;quot;git push&amp;quot;, &amp;quot;c&amp;quot;: &amp;quot;git commit -m&amp;quot;, &amp;quot;s&amp;quot;: &amp;quot;git status&amp;quot;, &amp;quot;a&amp;quot;: &amp;quot;git add -p .</description>
+    </item>
+    
+    <item>
+      <title>Ruby on Rails</title>
+      <link>https://dhamidi.github.io/leader/guides/rails/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://dhamidi.github.io/leader/guides/rails/</guid>
+      <description>Ruby on Rails When developing with Ruby on Rails there are many common commands that are invoked frequently. leader can remove a lot of friction from the development process by providing quick access to many of these commands.
+Configuration Add the following to your ~/.leaderrc:
+{ &amp;quot;keys&amp;quot;: { &amp;quot;r&amp;quot;: { &amp;quot;name&amp;quot;: &amp;quot;ruby&amp;quot;, &amp;quot;keys&amp;quot;: { &amp;quot;d&amp;quot;: { &amp;quot;name&amp;quot;: &amp;quot;database&amp;quot;, &amp;quot;keys&amp;quot;: { &amp;quot;m&amp;quot;: &amp;quot;bundle rake db:migrate&amp;quot;, &amp;quot;r&amp;quot;: &amp;quot;bundle rake db:reset&amp;quot; } }, &amp;quot;s&amp;quot;: &amp;quot;bin/rails server&amp;quot;, &amp;quot;c&amp;quot;: &amp;quot;bin/rails console&amp;quot;, &amp;quot;t&amp;quot;: &amp;quot;bundle exec rake test&amp;quot; } } } }  Don&amp;rsquo;t forget that you can add project local bindings for project-specific rake tasks by placing an additional .</description>
     </item>
     
   </channel>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en" xml:lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Guides</title>
+    <link rel="stylesheet" href="/leader/main.css">
+  </head>
+  <body>
+    <nav class="navigation">
+      <div class="navigation__logo">
+        <a href="/leader/"><img width="64" height="64" src="/leader/images/logo.png"></a>
+      </div>
+      <ul class="navigation__entries">
+        <li class="navigation__entry"><a href="/leader/guides/">Guides</a></li>
+      </ul>
+    </nav>
+    <main class="main">
+      
+
+
+<h1 id="guides">Guides</h1>
+
+<p>This pages shows various ways of configuring <code>leader</code> to work with common tools.</p>
+
+  <p>Available guides:</p>
+  <ul>
+    
+      <li><a href="#git">Git</a></li>
+    
+      <li><a href="#rails">Ruby on Rails</a></li>
+    
+  </ul>
+  
+     
+       <article id="git" class="guide">
+         
+
+<h1 id="integrating-git">Integrating Git</h1>
+
+<p>Using <code>git</code> from the command line can be quite tedious, especially when frequently having to run the same commands.
+Users of <code>emacs</code> often use <a href="https://magit.vc/">magit</a> and the setup presented here can best be thought of as an approximation of magit&rsquo;s functionality outside of <code>emacs</code>.</p>
+
+<h2 id="configuration">Configuration</h2>
+
+<p>Add the following to your <code>~/.leaderrc</code>:</p>
+
+<pre><code class="language-json">{
+  &quot;keys&quot;: {
+    &quot;g&quot;: {
+      &quot;name&quot;: &quot;git&quot;,
+      &quot;loopingKeys&quot;: [&quot;s&quot;],
+      &quot;keys&quot;: {
+        &quot;p&quot;: &quot;git pull&quot;,
+        &quot;P&quot;: &quot;git push&quot;,
+        &quot;c&quot;: &quot;git commit -m&quot;,
+        &quot;s&quot;: &quot;git status&quot;,
+        &quot;a&quot;: &quot;git add -p .&quot;,
+        &quot;f&quot;: &quot;git fetch&quot;,
+        &quot;b&quot;: &quot;git select-branch&quot;,
+        &quot;B&quot;: &quot;read -e -p 'Create branch: '; git checkout -b \&quot;$REPLY\&quot;&quot;,
+        &quot;g&quot;: &quot;read -e -p 'Pattern: '; git grep \&quot;$REPLY\&quot;&quot;,
+        &quot;z&quot;: {
+          &quot;name&quot;: &quot;stash&quot;,
+          &quot;keys&quot;: {
+            &quot;z&quot;: &quot;git stash save&quot;,
+            &quot;p&quot;: &quot;git stash pop&quot;
+          }
+        }
+      }
+    }
+  }
+}
+</code></pre>
+
+<p>Most of the bindings should be obvious.
+A few bindings might need some explaining words:</p>
+
+<ul>
+<li><kbd>g B</kbd> prompts for a branch name and then creates a branch with the provided name</li>
+<li><kbd>g g</kbd> prompts for a pattern and then searches the repository using <code>git grep</code></li>
+<li><kbd>g s</kbd> runs <code>git status</code>.  Since <code>s</code> is listed under <code>loopingKeys</code>, you can press <kbd>s</kbd> repeatedly to update the status, without leaving the current menu.</li>
+</ul>
+
+       </article>
+     
+       <article id="rails" class="guide">
+         
+
+<h1 id="ruby-on-rails">Ruby on Rails</h1>
+
+<p>When developing with Ruby on Rails there are many common commands that are invoked frequently.
+<code>leader</code> can remove a lot of friction from the development process by providing quick access to many of these commands.</p>
+
+<h2 id="configuration">Configuration</h2>
+
+<p>Add the following to your <code>~/.leaderrc</code>:</p>
+
+<pre><code class="language-json">{
+  &quot;keys&quot;: {
+    &quot;r&quot;: {
+      &quot;name&quot;: &quot;ruby&quot;,
+      &quot;keys&quot;: {
+        &quot;d&quot;: {
+          &quot;name&quot;: &quot;database&quot;,
+          &quot;keys&quot;: {
+            &quot;m&quot;: &quot;bundle rake db:migrate&quot;,
+            &quot;r&quot;: &quot;bundle rake db:reset&quot;
+          }
+        },
+        &quot;s&quot;: &quot;bin/rails server&quot;,
+        &quot;c&quot;: &quot;bin/rails console&quot;,
+        &quot;t&quot;: &quot;bundle exec rake test&quot;
+      }
+    }
+  }
+}
+</code></pre>
+
+<p>Don&rsquo;t forget that you can add project local bindings for project-specific rake tasks by placing an additional <code>.leaderrc</code> in your project&rsquo;s root directory.</p>
+
+       </article>
+     
+  
+
+    </main>
+  </body>
+</html>

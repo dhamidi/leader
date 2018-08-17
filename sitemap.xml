@@ -13,12 +13,15 @@
   
   <url>
     <loc>https://dhamidi.github.io/leader/guides/</loc>
-    <priority>0</priority>
   </url>
   
   <url>
     <loc>https://dhamidi.github.io/leader/</loc>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://dhamidi.github.io/leader/guides/rails/</loc>
   </url>
   
   <url>
