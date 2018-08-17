@@ -8,8 +8,16 @@ For upcoming features, improvements and ideas please refer to [TODO].
 
 ## [Unreleased]
 
+## [v0.1.4]
+
+### Added
+
 - Restore terminal state after each invocation of `leader` (requires `stty`)
 - Add `leader help` subcommand
 
+### Fixed
+- Fix configuration load order: project-local overrides were broken
+
 [Unreleased]: https://github.com/dhamidi/leader/compare/v0.1.3...HEAD
+[v0.1.4]: https://github.com/dhamidi/leader/compare/v0.1.3...v0.1.4
 [TODO]: https://github.com/dhamidi/leader/blob/master/TODO.md
