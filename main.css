@@ -28,3 +28,24 @@
     font-size: 16px;
     line-height: normal;
 }
+
+.navigation {
+    max-width: 960px;
+    margin: auto;
+    border-bottom: 1px solid black;
+}
+
+.navigation__logo {
+    display: inline-block;
+}
+
+.navigation__entries {
+    display: inline-block;
+    list-style: none;
+    padding: 0;
+    float: right;
+}
+
+.navigation__entry {
+    display: inline-block;
+}

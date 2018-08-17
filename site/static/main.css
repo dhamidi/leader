@@ -1,5 +1,8 @@
 * {
     box-sizing: border-box;
+}
+
+body {
     font-family: sans-serif;
 }
 
@@ -8,6 +11,7 @@
     margin: auto;
 }
 
+h1, h2, h3, h4, h5, h6,
 .headline {
     font-family: serif;
 }
@@ -16,15 +20,43 @@
     text-align: center;
 }
 
-.code, .keypress {
+pre > code {
+    line-height: 18px;
+    font-size: 14px;
+    padding: 0;
+}
+code, pre, kbd, .code, .keypress {
     background: #eee;
     padding: 5px;
     line-height: 2;
     font-size: 16px;
     font-family: monospace;
 }
+
+pre,
 .code--block {
     padding: 5px;
     font-size: 16px;
     line-height: normal;
+}
+
+.navigation {
+    max-width: 960px;
+    margin: auto;
+    border-bottom: 1px solid black;
+}
+
+.navigation__logo {
+    display: inline-block;
+}
+
+.navigation__entries {
+    display: inline-block;
+    list-style: none;
+    padding: 0;
+    float: right;
+}
+
+.navigation__entry {
+    display: inline-block;
 }

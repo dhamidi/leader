@@ -1,0 +1,10 @@
+{{define "main"}}
+{{.Content}}
+  {{if (gt (len .Pages) 0)}}
+     {{range .Pages}}
+       <article class="guide">
+         {{.Content}}
+       </article>
+     {{end}}
+  {{end}}
+{{end}}

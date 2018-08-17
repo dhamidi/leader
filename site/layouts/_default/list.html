@@ -1,0 +1,9 @@
+{{define "main"}}
+  {{if (gt (len .Pages) 0)}}
+    <ul class="guides">
+     {{range .Pages}}
+       <li class="guides__entry"><a href="{{.Permalink}}" class="guides__link">{{.Title}}</a></li>
+     {{end}}
+    </ul>
+  {{end}}
+{{end}}

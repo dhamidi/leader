@@ -7,6 +7,12 @@
   </head>
   <body>
     <nav class="navigation">
+      <div class="navigation__logo">
+        <a href="{{relURL "/"}}"><img width="64" height="64" src="{{relURL "/images/logo.png"}}"></a>
+      </div>
+      <ul class="navigation__entries">
+        <li class="navigation__entry"><a href="{{relURL "/guides/"}}">Guides</a></li>
+      </ul>
     </nav>
     <main class="main">
       {{template "main" .}}
