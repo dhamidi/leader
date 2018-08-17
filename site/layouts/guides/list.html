@@ -1,8 +1,14 @@
 {{define "main"}}
 {{.Content}}
+  <p>Available guides:</p>
+  <ul>
+    {{range .Pages}}
+      <li><a href="#{{.Source.BaseFileName}}">{{.Title}}</a></li>
+    {{end}}
+  </ul>
   {{if (gt (len .Pages) 0)}}
      {{range .Pages}}
-       <article class="guide">
+       <article id="{{.Source.BaseFileName}}" class="guide">
          {{.Content}}
        </article>
      {{end}}
