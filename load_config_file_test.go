@@ -31,7 +31,7 @@ func TestLoadConfigFile_Execute_merges_key_bindings_from_config_file(t *testing.
       "name": "go",
       "loopingKeys": ["t"],
       "keys": {
-        "t": "go test ."
+        "t": "go test -v ."
       }
     }
   }
@@ -44,6 +44,8 @@ func TestLoadConfigFile_Execute_merges_key_bindings_from_config_file(t *testing.
 	context := newTestContext(t, keymap, bytes.NewBufferString(""), nil)
 
 	loadConfig := main.NewLoadConfigFile(context, configFile.Name())
+	keymap.Bind('d').Describe("do nothing")
+	keymap.Bind('g').Children().Bind('t').Describe("go test .")
 	assert.NoError(t, loadConfig.Execute(), "loadConfig.Execute()")
 
 	keyD := keymap.LookupKey('d')
@@ -52,5 +54,5 @@ func TestLoadConfigFile_Execute_merges_key_bindings_from_config_file(t *testing.
 	assert.Equal(t, "[g] <keymap go>", keyG.String())
 	keyGT := keyG.Children().LookupKey('t')
 	assert.True(t, keyGT.IsLooping(), "keyGT.IsLooping()")
-	assert.Equal(t, "[t] go test .", keyGT.String())
+	assert.Equal(t, "[t] go test -v .", keyGT.String())
 }

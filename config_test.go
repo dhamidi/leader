@@ -8,8 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestConfig_ParseJSON(t *testing.T) {
-	exampleConfig := `
+var exampleConfig = `
 {
   "keys": {
     "d": "date",
@@ -23,6 +22,8 @@ func TestConfig_ParseJSON(t *testing.T) {
   }
 }
 `
+
+func TestConfig_ParseJSON(t *testing.T) {
 	config := main.NewConfig()
 	assert.NoError(t, config.ParseJSON(bytes.NewBufferString(exampleConfig)))
 	assert.Equal(t, "root", *config.Root.Name)

@@ -31,22 +31,18 @@ func NewLoadConfig(ctx *Context, start string, home string) *LoadConfig {
 // previously already.
 func (cmd *LoadConfig) Execute() error {
 	currentPath := cmd.Start
-	files := []string{}
 	homeRC := filepath.Join(cmd.Home, ".leaderrc")
-	addedHomeRC := false
+	files := []string{homeRC}
 	for {
 		filename := filepath.Join(currentPath, ".leaderrc")
 		currentPath = filepath.Dir(currentPath)
 		if len(files) > 0 && filename == files[len(files)-1] {
 			break
 		}
-		files = append(files, filename)
 		if filename == homeRC {
-			addedHomeRC = true
+			continue
 		}
-	}
-	if !addedHomeRC {
-		files = append([]string{homeRC}, files...)
+		files = append(files, filename)
 	}
 
 	for _, filename := range files {
