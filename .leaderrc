@@ -19,6 +19,7 @@
       "loopingKeys": ["t"],
       "keys": {
         "b": "go build .",
+        "i": "packr && go install .",
         "t": "go test ."
       }
     }
