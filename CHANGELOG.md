@@ -8,6 +8,14 @@ For upcoming features, improvements and ideas please refer to [TODO].
 
 ## [Unreleased]
 
+### Added
+
+- Restore terminal state and exit when receiving a signal
+
+### Fixed
+
+- Terminal state wasn't properly restored sometimes.  After removing `stty sane` from the shell-specific input wrappers the problem disappeared.
+
 ## [v0.1.4]
 
 ### Added

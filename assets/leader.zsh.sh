@@ -11,7 +11,6 @@
         return "$leader_exit"
     fi
     eval "$leader_next"
-    stty sane
   }
 
   zle -N leader_widget

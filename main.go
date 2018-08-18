@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"os/signal"
 	"path/filepath"
 	"strconv"
 
@@ -12,6 +13,8 @@ import (
 )
 
 func main() {
+	allSignals := make(chan os.Signal, 1)
+	signal.Notify(allSignals)
 	errorHandler := NewErrorLogger(os.Stderr)
 	defer func() {
 		v := recover()
@@ -38,6 +41,11 @@ func main() {
 		Executor:      executor,
 		Terminal:      tty,
 	}
+	go func() {
+		<-allSignals
+		tty.Restore()
+		os.Exit(0)
+	}()
 	loadConfig := NewLoadConfig(context, os.Getenv("PWD"), os.Getenv("HOME"))
 	errorHandler.Must(loadConfig.Execute)
 	parseArgs(context, os.Args)

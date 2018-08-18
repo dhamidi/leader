@@ -10,7 +10,6 @@ leader_widget() {
       return $leader_exit
   fi
   eval "$leader_next"
-  stty sane
 }
 
 bind -x '"\\":leader_widget print'
