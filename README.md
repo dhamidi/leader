@@ -12,6 +12,8 @@ For example, using Leader you could map pressing `g` followed by `c` to running 
 
 Download the `leader` binary from [here](https://github.com/dhamidi/leader/releases) and put it somewhere on your `$PATH`.
 
+## bash and zsh
+
 Add the following to your `~/.bashrc` or `~/.zshrc`:
 
 ```
@@ -19,6 +21,16 @@ eval "$(leader init)"
 ```
 
 This installs leader and binds it to `\`.
+
+## fish
+
+Add the following to your `~/.config/fish/config.fish`:
+
+```
+leader init | source
+```
+
+This installs leader into fish and binds it to `\`.
 
 # Configuration
 

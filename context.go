@@ -2,6 +2,7 @@ package main
 
 // Context provides dependencies for running UI commands
 type Context struct {
+	Shell         Shell
 	Terminal      Terminal
 	CurrentKeyMap *KeyMap
 	History       []*KeyMap

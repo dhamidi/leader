@@ -6,11 +6,17 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
-	"path/filepath"
-	"strconv"
 
 	"github.com/gobuffalo/packr"
 )
+
+// Shell defines the common functions that need to be supported by a
+// shell in order for leader to support it.
+type Shell interface {
+	Commandline() (string, int)
+	Init() string
+	EvalNext(command string, path []rune) string
+}
 
 func main() {
 	allSignals := make(chan os.Signal, 1)
@@ -27,7 +33,8 @@ func main() {
 		errorHandler.Fatal(err)
 	}
 
-	line, cursor := getCurrentInputLine()
+	shell := NewShellFromEnv(os.Getenv)
+	line, cursor := shell.Commandline()
 	shellParser := NewShellParser()
 	if shellParser.InQuotedString(line, cursor) {
 		os.Exit(3)
@@ -40,6 +47,7 @@ func main() {
 		CurrentKeyMap: rootKeyMap,
 		Executor:      executor,
 		Terminal:      tty,
+		Shell:         shell,
 	}
 	go func() {
 		<-allSignals
@@ -60,7 +68,7 @@ func parseArgs(context *Context, args []string) {
 	}
 
 	if args[1] == "init" {
-		initShell()
+		initShell(context)
 		os.Exit(0)
 	}
 
@@ -108,39 +116,6 @@ func showHelp(context *Context) {
 	man.Run()
 }
 
-func getCurrentInputLine() (string, int) {
-	shellName := filepath.Base(os.Getenv("SHELL"))
-	switch shellName {
-	case "zsh":
-		return getCurrentInputLineZSH()
-	case "bash":
-		return getCurrentInputLineBash()
-	default:
-		return "", 0
-	}
-}
-
-func getCurrentInputLineZSH() (string, int) {
-	line := os.Getenv("BUFFER")
-	point, _ := strconv.Atoi(os.Getenv("CURSOR"))
-	return line, point
-}
-
-func getCurrentInputLineBash() (string, int) {
-	readlineLine := os.Getenv("READLINE_LINE")
-	readlinePoint, _ := strconv.Atoi(os.Getenv("READLINE_POINT"))
-	return readlineLine, readlinePoint
-}
-
-func initShell() {
-	initFiles := packr.NewBox("./assets")
-	shellName := filepath.Base(os.Getenv("SHELL"))
-	switch shellName {
-	case "zsh":
-		fmt.Printf("%s\n", initFiles.String("leader.zsh.sh"))
-	case "bash":
-		fmt.Printf("%s\n", initFiles.String("leader.bash.sh"))
-	default:
-		fmt.Fprintf(os.Stderr, "Shell %s not supported!\n", shellName)
-	}
+func initShell(context *Context) {
+	fmt.Printf("%s\n", context.Shell.Init())
 }

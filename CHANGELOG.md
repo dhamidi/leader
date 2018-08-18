@@ -11,6 +11,7 @@ For upcoming features, improvements and ideas please refer to [TODO].
 ### Added
 
 - Restore terminal state and exit when receiving a signal
+- Add support for [fish]
 
 ### Fixed
 
@@ -26,6 +27,7 @@ For upcoming features, improvements and ideas please refer to [TODO].
 ### Fixed
 - Fix configuration load order: project-local overrides were broken
 
-[Unreleased]: https://github.com/dhamidi/leader/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/dhamidi/leader/compare/v0.1.4...HEAD
 [v0.1.4]: https://github.com/dhamidi/leader/compare/v0.1.3...v0.1.4
 [TODO]: https://github.com/dhamidi/leader/blob/master/TODO.md
+[fish]: https://fishshell.com
