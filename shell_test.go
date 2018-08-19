@@ -12,7 +12,7 @@ import (
 func TestBash_Commandline_extracts_info_from_environment(t *testing.T) {
 	getenv := func(name string) string {
 		switch name {
-		case "READLINE_INPUT":
+		case "READLINE_LINE":
 			return "line"
 		case "READLINE_POINT":
 			return "1"

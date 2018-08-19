@@ -8,6 +8,10 @@ For upcoming features, improvements and ideas please refer to [TODO].
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed crash when pressing `\` in bash anywhere but on an empty command line
+
 ## [v0.1.5]
 
 ### Added

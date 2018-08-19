@@ -49,7 +49,7 @@ func NewPOSIXShell(name string, getenv Getenv, commandLineBufferName, commandLin
 
 // NewBashShell returns a POSIXShell configured for /bin/bash.
 func NewBashShell(getenv Getenv) *POSIXShell {
-	return NewPOSIXShell("bash", getenv, "READLINE_INPUT", "READLINE_POINT")
+	return NewPOSIXShell("bash", getenv, "READLINE_LINE", "READLINE_POINT")
 }
 
 // NewZSHShell returns a POSIXShell configured for /bin/zsh.
