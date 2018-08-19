@@ -6,6 +6,10 @@ body {
     font-family: sans-serif;
 }
 
+img {
+    max-width: 100%;
+}
+
 .main {
     max-width: 960px;
     margin: auto;
@@ -59,4 +63,10 @@ pre,
 
 .navigation__entry {
     display: inline-block;
+}
+
+.guide {
+    border-top: 1px solid grey;
+    margin-top: 2em;
+    padding-top: 2em;
 }
