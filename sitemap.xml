@@ -16,6 +16,10 @@
   </url>
   
   <url>
+    <loc>https://dhamidi.github.io/leader/guides/fzf/</loc>
+  </url>
+  
+  <url>
     <loc>https://dhamidi.github.io/leader/</loc>
     <priority>0</priority>
   </url>

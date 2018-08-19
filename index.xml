@@ -22,6 +22,17 @@ Configuration Add the following to your ~/.leaderrc:
     </item>
     
     <item>
+      <title>Interactive selections with fzf</title>
+      <link>https://dhamidi.github.io/leader/guides/fzf/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://dhamidi.github.io/leader/guides/fzf/</guid>
+      <description>Interactive selections with fzf Sometimes commands that you bind to keys with leader need some extra information, for example which git branch to check out or which manual page to open.
+Most of the times that extra bit of information comes from a set of existing items: the list of branches in your git repository or the list of manual pages installed on your system.
+fzf is a command line utility for presenting interactive selections in the terminal.</description>
+    </item>
+    
+    <item>
       <title>Ruby on Rails</title>
       <link>https://dhamidi.github.io/leader/guides/rails/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

@@ -27,6 +27,8 @@
     
       <li><a href="#git">Git</a></li>
     
+      <li><a href="#fzf">Interactive selections with fzf</a></li>
+    
       <li><a href="#rails">Ruby on Rails</a></li>
     
   </ul>
@@ -80,6 +82,70 @@ A few bindings might need some explaining words:</p>
 <li><kbd>g g</kbd> prompts for a pattern and then searches the repository using <code>git grep</code></li>
 <li><kbd>g s</kbd> runs <code>git status</code>.  Since <code>s</code> is listed under <code>loopingKeys</code>, you can press <kbd>s</kbd> repeatedly to update the status, without leaving the current menu.</li>
 </ul>
+
+       </article>
+     
+       <article id="fzf" class="guide">
+         
+
+<h1 id="interactive-selections-with-fzf">Interactive selections with fzf</h1>
+
+<p>Sometimes commands that you bind to keys with leader need some extra information,
+for example which git branch to check out or which manual page to open.</p>
+
+<p>Most of the times that extra bit of information comes from a set of existing items:
+the list of branches in your git repository or the list of manual pages installed on your system.</p>
+
+<p><a href="https://github.com/junegunn/fzf">fzf</a> is a command line utility for presenting interactive selections in the terminal.
+This guide examines a few possibilities of using <code>fzf</code> together with <code>leader</code>.</p>
+
+<p><strong>Prerequisites</strong>:</p>
+
+<ul>
+<li>have <code>fzf</code> installed</li>
+<li>have a directory on your <code>PATH</code> in which you can place scripts</li>
+</ul>
+
+<h2 id="changing-git-branches">Changing git branches</h2>
+
+<p>Place the following script as <code>git-select-branch</code> in a directory on your <code>PATH</code>:</p>
+
+<pre><code>#!/bin/bash
+
+BRANCH_NAME=$(git branch --all --list --format='%(refname:lstrip=2)' | fzf --height=10)
+git checkout &quot;$BRANCH_NAME&quot;
+</code></pre>
+
+<p>Then add the following binding to your <code>~/.leaderrc</code>, whereever you already have bindings for <code>git</code>:</p>
+
+<pre><code>    &quot;b&quot;: &quot;git select-branch&quot;
+</code></pre>
+
+<p>The end result:</p>
+
+<p><a href="https://asciinema.org/a/O0NB8Qle6YkPuIHTGJBYDOr0x"><img src="https://asciinema.org/a/O0NB8Qle6YkPuIHTGJBYDOr0x.png" alt="asciicast" /></a></p>
+
+<h2 id="quickly-opening-man-pages">Quickly opening man pages</h2>
+
+<p>Place the following script as <code>select-man-page</code> in a directory on your <code>PATH</code>.  The scripts uses the output of <code>apropos(1)</code> to show a summary of manual pages installed on your system
+and then presents you with a selection of all those man pages.</p>
+
+<pre><code>#!/bin/bash
+apropos . |
+fzf --height=10 |
+tr -d '()' |
+awk '{print $2 &quot; &quot; $1}' |
+xargs man
+</code></pre>
+
+<p>Then add the following binding to your <code>~/.leaderrc</code>:</p>
+
+<pre><code>  &quot;m&quot;: &quot;select-man-page&quot;
+</code></pre>
+
+<p>The end result:</p>
+
+<p><a href="https://asciinema.org/a/lcIaOUnazTMc0egXiFq6CESHD"><img src="https://asciinema.org/a/lcIaOUnazTMc0egXiFq6CESHD.png" alt="asciicast" /></a></p>
 
        </article>
      
