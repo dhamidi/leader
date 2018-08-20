@@ -10,8 +10,6 @@ For upcoming features, improvements and ideas please refer to [TODO].
 
 ### TODO
 
-- Fix configuration file load order: currently less specific configuration files are loaded after more specific configuration files (except for `$HOME/.leaderrc`), which breaks expected configuration behavior
-
 ### Added
 
 - Added `leader version` command to output the current version of leader.  This necessary to help people who report issues on Github.
@@ -20,6 +18,7 @@ For upcoming features, improvements and ideas please refer to [TODO].
 
 - Fixed crash when pressing `\` in bash anywhere but on an empty command line
 - Fixed looping keys nested under the same key going to the parent menu: e.g. `j j` where the second `j` is listed under `loopingKeys` actually listed the menu of the first `j`.
+- Fixed configuration file load order: less specific configuration files were loaded after more specific configuration files (except for `$HOME/.leaderrc`), which broke expected configuration behavior
 
 ## [v0.1.5]
 

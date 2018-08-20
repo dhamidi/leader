@@ -45,6 +45,12 @@ func (term *testTerminal) ReadKey() (rune, error) {
 	return key.Key, nil
 }
 
+func defineTestFile(ctx *main.Context, path string, contents string) {
+	ctx.Files.(*testFileSystem).Define(path, contents)
+}
+func newTestContextForConfig(t *testing.T) *main.Context {
+	return newTestContext(t, main.NewKeyMap("root"), bytes.NewBufferString(""), bytes.NewBufferString(""))
+}
 func newTestContext(t *testing.T, root *main.KeyMap, input io.Reader, output io.Writer) *main.Context {
 	testTerminal := newTestTerminal().InputFrom(input)
 	if output != nil {

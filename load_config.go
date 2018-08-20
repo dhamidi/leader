@@ -22,17 +22,16 @@ func NewLoadConfig(ctx *Context, start string, home string) *LoadConfig {
 	}
 }
 
-// Execute examines the current directory and every parent directory for a file called ".leaderrc" and loads that file as a JSON configuration for leader.
-//
-// It is not an error if such a file does not exist.
-//
-// After scanning all directories up to the file system's root
-// directory $HOME/.leaderrc is loaded if it has not been loaded
-// previously already.
+// Execute scans all directories from the current directory up to the
+// root directory for files called ".leaderrc".  If such files exist,
+// they are parsed as JSON sorted by distance: files further away from
+// $HOME/.leaderrc are parsed later than files closer to
+// $HOME/.leaderrc.
 func (cmd *LoadConfig) Execute() error {
 	currentPath := cmd.Start
 	homeRC := filepath.Join(cmd.Home, ".leaderrc")
-	files := []string{homeRC}
+	homeRCAdded := false
+	files := []string{}
 	for {
 		filename := filepath.Join(currentPath, ".leaderrc")
 		currentPath = filepath.Dir(currentPath)
@@ -40,13 +39,17 @@ func (cmd *LoadConfig) Execute() error {
 			break
 		}
 		if filename == homeRC {
-			continue
+			homeRCAdded = true
 		}
 		files = append(files, filename)
 	}
 
-	for _, filename := range files {
-		loadConfig := NewLoadConfigFile(cmd.Context, filename)
+	if !homeRCAdded {
+		files = append(files, homeRC)
+	}
+
+	for i := len(files) - 1; i >= 0; i-- {
+		loadConfig := NewLoadConfigFile(cmd.Context, files[i])
 		if err := loadConfig.Execute(); err != nil && !os.IsNotExist(err) {
 			cmd.ErrorLogger.Print(err)
 		}
