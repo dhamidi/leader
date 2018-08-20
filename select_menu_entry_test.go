@@ -3,6 +3,7 @@ package main_test
 import (
 	"bytes"
 	"io"
+	"os"
 	"testing"
 
 	"github.com/Nerdmaster/terminal"
@@ -51,6 +52,7 @@ func newTestContext(t *testing.T, root *main.KeyMap, input io.Reader, output io.
 	}
 
 	return &main.Context{
+		Shell:         main.NewBashShell(os.Getenv),
 		Terminal:      testTerminal,
 		CurrentKeyMap: root,
 	}
@@ -191,4 +193,20 @@ func TestSelectMenuEntry_Execute_keeps_executing_looping_keys_repeatedly(t *test
 	selectMenuEntry.Execute()
 
 	assert.Equal(t, 4, command.called)
+}
+
+func TestSelectMenuEntry_Execute_looping_key_shows_child_menu_when_parent_and_child_are_bound_to_same_key(t *testing.T) {
+	input := bytes.NewBufferString("jjj")
+	keymap := main.NewKeyMap("root")
+	output := bytes.NewBufferString("")
+	context := newTestContext(t, keymap, input, output)
+	keymap.Bind('j').Children().
+		Rename("jump").
+		Bind('j').Describe("down").SetLooping(true).Do(
+		main.NewRunShellCommand(context, "pushd ..").Execute,
+	)
+	commands := bytes.NewBufferString("")
+	context.Executor = main.NewPrintingExecutor(context, commands)
+	main.NewSelectMenuEntry(context).Execute()
+	assert.Contains(t, commands.String(), context.Shell.EvalNext("pushd ..", []rune{'j'}))
 }

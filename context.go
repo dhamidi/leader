@@ -40,7 +40,7 @@ func (ctx *Context) CurrentBindingIsLooping() bool {
 
 // PushKey records the given key in the key path.  A key is never recorded twice in a row.
 func (ctx *Context) PushKey(key rune) {
-	if len(ctx.KeyPath) > 0 && ctx.KeyPath[len(ctx.KeyPath)-1] == key {
+	if len(ctx.KeyPath) > 0 && ctx.KeyPath[len(ctx.KeyPath)-1] == key && !ctx.CurrentBindingIsLooping() {
 		return
 	}
 	ctx.KeyPath = append(ctx.KeyPath, key)
