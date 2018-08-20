@@ -44,7 +44,7 @@ To get started, put the JSON listed below into `~/.leaderrc`.  This example conf
     "g": {
       "name": "go",
       "keys": {
-        "b": "go build ."
+        "b": "go build .",
         "t": {
           "name": "test",
           "loopingKeys": ["."],
