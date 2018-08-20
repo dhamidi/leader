@@ -33,6 +33,18 @@ fzf is a command line utility for presenting interactive selections in the termi
     </item>
     
     <item>
+      <title>Jumping around in the filesystem</title>
+      <link>https://dhamidi.github.io/leader/guides/filesystem/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://dhamidi.github.io/leader/guides/filesystem/</guid>
+      <description>Jumping around in the filesystem Since commands issued through leader are evaluated in the context of the current shell, leader can be used to change the shell&amp;rsquo;s current working directory and other shell-local settings (such as key bindings).
+This can be used for quickly accessing common directories and navigating through the filesystem with single key presses.
+Here is an example configuration showing some of the possibilities:
+{ &amp;quot;keys&amp;quot;: { &amp;quot;j&amp;quot;: { &amp;quot;name&amp;quot;: &amp;quot;jump&amp;quot;, &amp;quot;loopingKeys&amp;quot;: [&amp;quot;j&amp;quot;, &amp;quot;k&amp;quot;], &amp;quot;keys&amp;quot;: { &amp;quot;k&amp;quot;: &amp;quot;pushd .</description>
+    </item>
+    
+    <item>
       <title>Ruby on Rails</title>
       <link>https://dhamidi.github.io/leader/guides/rails/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

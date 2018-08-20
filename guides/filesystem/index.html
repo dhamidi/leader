@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" xml:lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Jumping around in the filesystem</title>
+    <link rel="stylesheet" href="/leader/main.css">
+  </head>
+  <body>
+    <nav class="navigation">
+      <div class="navigation__logo">
+        <a href="/leader/"><img width="64" height="64" src="/leader/images/logo.png"></a>
+      </div>
+      <ul class="navigation__entries">
+        <li class="navigation__entry"><a href="/leader/guides/">Guides</a></li>
+      </ul>
+    </nav>
+    <main class="main">
+      
+
+
+<h1 id="jumping-around-in-the-filesystem">Jumping around in the filesystem</h1>
+
+<p>Since commands issued through <code>leader</code> are evaluated in the context of the current shell, <code>leader</code> can be used to change the shell&rsquo;s current working directory and other shell-local settings (such as key bindings).</p>
+
+<p>This can be used for quickly accessing common directories and navigating through the filesystem with single key presses.</p>
+
+<p>Here is an example configuration showing some of the possibilities:</p>
+
+<pre><code>{
+  &quot;keys&quot;: {
+    &quot;j&quot;: {
+      &quot;name&quot;: &quot;jump&quot;,
+      &quot;loopingKeys&quot;: [&quot;j&quot;, &quot;k&quot;],
+      &quot;keys&quot;: {
+        &quot;k&quot;: &quot;pushd .. &amp;&amp; pwd&quot;,
+        &quot;j&quot;: &quot;popd &amp;&amp; pwd&quot;,
+        &quot;\\&quot;: &quot;cd $GOPATH/src/github.com/dhamidi/leader&quot;
+      }
+    }
+  }
+}
+</code></pre>
+
+<p>The example above includes a shortcut to jump into the <code>leader</code>&rsquo;s repository on disk to make changes there, since it&rsquo;s a often used directory.
+The keys <kbd>k</kbd> and <kbd>j</kbd> are used to navigate up and down through the directory hierarchy.
+Since both of these keys are listed as looping keys, they can be pressed repeatedly to quickly navigate through the filesystem.</p>
+
+<p>This could be further extend with a helper script that lists the alphabetically next/previous directory in the current directory, which would allow for &ldquo;lateral&rdquo; movement between the children of the current directory and could be bound to <kbd>h</kbd> and <kbd>l</kbd>.</p>
+
+
+    </main>
+  </body>
+</html>
