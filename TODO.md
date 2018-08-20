@@ -41,3 +41,14 @@
   - add `eval "$(leader init)"` (`bash`, `zsh`) or `leader init | source` (`fish`) to the shell's initialization file
   - spawn a new process of the currently running shell to force rereading of the shell's initialization file.
 - if possible, `leader install` also installs the manual page for leader in a directory where `man` can find it
+
+## `leader config`
+
+**Status**: *open*
+
+**Goals**:
+- Help with debugging faulty leader configuration files
+- Explain leader's current configuration
+
+**Example applications**:
+- A user has several leader configuration files placed in various directories.  When running leader, he is surprised to see bindings he didn't expect.   They can now run `leader config` to see exactly which key binding is defined in which file.
