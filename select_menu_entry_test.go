@@ -52,6 +52,7 @@ func newTestContext(t *testing.T, root *main.KeyMap, input io.Reader, output io.
 	}
 
 	return &main.Context{
+		Files:         NewTestFileSystem(),
 		Shell:         main.NewBashShell(os.Getenv),
 		Terminal:      testTerminal,
 		CurrentKeyMap: root,

@@ -53,6 +53,7 @@ func main() {
 	executor := NewShellExecutor("bash", "-c").Attach(tty.File())
 	rootKeyMap := NewKeyMap("root")
 	context := &Context{
+		Files:         NewOnDiskFileSystem(),
 		ErrorLogger:   errorHandler,
 		CurrentKeyMap: rootKeyMap,
 		Executor:      executor,

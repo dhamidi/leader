@@ -1,6 +1,6 @@
 package main
 
-import "os"
+import "io"
 
 // LoadConfigFile loads a configuration file in JSON format and
 // applies its contents to the current key map in the application
@@ -22,11 +22,15 @@ func NewLoadConfigFile(context *Context, filename string) *LoadConfigFile {
 // JSON and applying the configuration settings stored within to the
 // current keymap.
 func (cmd *LoadConfigFile) Execute() error {
-	configFile, err := os.Open(cmd.Filename)
+	configFile, err := cmd.Files.Open(cmd.Filename)
 	if err != nil {
 		return err
 	}
-	defer configFile.Close()
+	defer func() {
+		if closer, ok := configFile.(io.Closer); ok {
+			closer.Close()
+		}
+	}()
 
 	config := NewConfig()
 	if err := config.ParseJSON(configFile); err != nil {
