@@ -8,6 +8,7 @@ leader \- interactive command launcher
 \fBleader\fP list-keys
 \fBleader\fP init
 \fBleader\fP help
+\fBleader\fP version
 .fi
 .SH DESCRIPTION
 leader presents an interactive, possibly nested menu in the user's terminal for quickly launching commands by pressing unmodified keys.
@@ -34,12 +35,17 @@ prints all configured key bindings.
 displays the shell initialization code for the shell indicated by the \fBSHELL\fR environment variable.
 Currently
 .BR bash (1)
-and
+,
 .BR zsh (1)
+and
+.BR fish (1)
 are supported.
 .TP
 \fBleader\fR help
 displays this help.
+.TP
+\fBleader\fR version
+displays the current version of leader
 .SH OPTIONS
 .TP
 \fB@\fR[\fIKEYS\fR]

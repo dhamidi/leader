@@ -11,7 +11,10 @@ For upcoming features, improvements and ideas please refer to [TODO].
 ### TODO
 
 - Fix configuration file load order: currently less specific configuration files are loaded after more specific configuration files (except for `$HOME/.leaderrc`), which breaks expected configuration behavior
-- Add `leader version` command to output the current version of leader.  This necessary to help people who report issues on Github.
+
+### Added
+
+- Added `leader version` command to output the current version of leader.  This necessary to help people who report issues on Github.
 
 ### Fixed
 

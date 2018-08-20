@@ -88,6 +88,7 @@ leader print          # show interactive menu, but print commands instead of run
 leader list-keys      # list all key bindings
 leader init           # print shell initialization code for $SHELL
 leader help           # display leader's man page
+leader version        # display the current version of leader
 ```
 
 # Key bindings

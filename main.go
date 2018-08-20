@@ -10,6 +10,16 @@ import (
 	"github.com/gobuffalo/packr"
 )
 
+// Revision contains the current revision (git commit hash) of this program.
+//
+// It is set during the build process using -ldflags.
+var Revision string
+
+// Release contains the current release (git tag pointing to Revision) of this program.
+//
+// It is set during the build process using -ldflags.
+var Release string
+
 // Shell defines the common functions that need to be supported by a
 // shell in order for leader to support it.
 type Shell interface {
@@ -77,6 +87,11 @@ func parseArgs(context *Context, args []string) {
 		os.Exit(0)
 	}
 
+	if args[1] == "version" {
+		showVersion()
+		os.Exit(0)
+	}
+
 	if args[1] == "help" {
 		showHelp(context)
 		os.Exit(0)
@@ -108,6 +123,14 @@ func navigateTo(context *Context, path []rune) {
 
 }
 
+func showVersion() {
+	if Release != "" {
+		fmt.Printf("%s\n", Release)
+	} else if Revision != "" {
+		fmt.Printf("%s\n", Revision)
+	}
+
+}
 func showHelp(context *Context) {
 	assets := packr.NewBox("./assets")
 	man := exec.Command("man", "-l", "-")
