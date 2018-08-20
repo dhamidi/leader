@@ -10,9 +10,11 @@ For upcoming features, improvements and ideas please refer to [TODO].
 
 ### TODO
 
+- Fix `@KEYS` to execute a command if any of the characters in `KEYS` points to a key that is bound to a command instead of a key map.
+
 ### Added
 
-- Added `leader version` command to output the current version of leader.  This necessary to help people who report issues on Github.
+- Added `leader version` command to output the current version of leader.  This is necessary to help people who report issues on Github.
 
 ### Fixed
 
