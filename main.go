@@ -116,6 +116,10 @@ func navigateTo(context *Context, path []rune) {
 			os.Exit(1)
 		}
 		if !binding.HasChildren() {
+			if binding.IsBoundToCommand() {
+				context.ErrorLogger.Print(binding.Execute())
+				os.Exit(0)
+			}
 			os.Exit(2)
 		}
 		context.KeyPath = append(context.KeyPath, keyRune)

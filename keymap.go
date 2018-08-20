@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"reflect"
 	"sort"
 )
 
@@ -92,6 +93,11 @@ func (b *KeyBinding) Execute() error {
 func (b *KeyBinding) Do(cmd Command) *KeyBinding {
 	b.command = cmd
 	return b
+}
+
+// IsBoundToCommand returns true if this key binding is not bound to DoNothing.
+func (b *KeyBinding) IsBoundToCommand() bool {
+	return reflect.ValueOf(b.command).Pointer() != reflect.ValueOf(DoNothing).Pointer()
 }
 
 // Key returns the key this key binding is bound to.
