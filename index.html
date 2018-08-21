@@ -20,14 +20,20 @@
 <h1 class="headline headline--centered"><img class="logo" src="/leader/images/logo.png"><br>VIM's leader key for your terminal!</h1>
 <script src="https://asciinema.org/a/j1SIx0G9cQ5q8M8wf3SZeu5OW.js" id="asciicast-j1SIx0G9cQ5q8M8wf3SZeu5OW" async></script>
 <h2 id="installation" class="headline">Installation</h2>
+
+<h3 id="installation-os-x">Mac OSX</h3>
+<p>leader is available via <a href="https://brew.sh">brew</a>:</p>
+<pre class="code code--block"><code>$ brew install dhamidi/all/leader</code></pre>
+<p>Alternatively you can download the <a href="https://github.com/dhamidi/leader/releases/download/v0.2.0/leader.darwin.amd64">latest binary</a> and place it in a directory on your <code class="code">$PATH</code></p>
+<h3 id="installation-linux">Linux (64bit)</h3>
+<p>Download the <a href="https://github.com/dhamidi/leader/releases/download/v0.2.0/leader.linux.amd64">latest binary</a> and place it in a directory on your <code class="code">$PATH</code></p>
+<h2 id="configuration" class="headline">Configuration</h2>
 <ul>
-  <li>Download the binary for your platform <a href="https://github.com/dhamidi/leader/releases/latest">here</a> and place it somewhere on your <code class="code">$PATH</code></li>
   <li>Run <code class="code">eval "$(leader init)"</code> to activate leader.</li>
   <li>Paste the <a href="#configuration">example configuration</a> into <code class="code">~/.leaderrc</code></li>
   <li>Press <kbd class="keypress">\</kbd> in your terminal to trigger leader.</li>
-  <li>If you like it, add <code class="code">eval "$(leader init)"</code> to your shell's initialization file (e.g <code class="code">~/.bashrc</code> or <code class="code">~/.zshrc</code>)
+  <li>If you like it, add <code class="code">eval "$(leader init)"</code> to your shell's initialization file (e.g <code class="code">~/.bashrc</code>, <code class="code">~/.zshrc</code>).<br>  <a href="https://fishshell.com">Fish</a> users should add <code class="code">leader init | source</code> to <code class="code">~/.config/fish/config.fish</code></li>
 </ul>
-<h2 id="configuration" class="headline">Configuration</h2>
 <p>
   Place the following in <code class="code">~/.leaderrc</code> to get started.
 </p>
