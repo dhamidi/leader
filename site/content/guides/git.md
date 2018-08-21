@@ -43,8 +43,8 @@ Add the following to your `~/.leaderrc`:
 Most of the bindings should be obvious.
 A few bindings might need some explaining words:
 
-- <kbd>g B</kbd> prompts for a branch name and then creates a branch with the provided name
-- <kbd>g g</kbd> prompts for a pattern and then searches the repository using `git grep`
-- <kbd>g s</kbd> runs `git status`.  Since `s` is listed under `loopingKeys`, you can press <kbd>s</kbd> repeatedly to update the status, without leaving the current menu.
+- <kbd>g</kbd><kbd>B</kbd> prompts for a branch name and then creates a branch with the provided name
+- <kbd>g</kbd><kbd>g</kbd> prompts for a pattern and then searches the repository using `git grep`
+- <kbd>g</kbd><kbd>s</kbd> runs `git status`.  Since <kbd>s</kbd> is listed under `loopingKeys`, you can press <kbd>s</kbd> repeatedly to update the status, without leaving the current menu.
 
 [magit]: https://magit.vc/

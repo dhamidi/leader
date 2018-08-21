@@ -29,9 +29,20 @@ pre > code {
     font-size: 14px;
     padding: 0;
 }
-code, pre, kbd, .code, .keypress {
+code, pre, .code, .keypress {
     background: #eee;
     padding: 5px;
+    line-height: 2;
+    font-size: 16px;
+    font-family: monospace;
+}
+
+kbd {
+    background: #efefef;
+    border-bottom: 3px solid #cfcfcf;
+    border-radius: 20%;
+    padding: 3px;
+    margin: 0 3px;
     line-height: 2;
     font-size: 16px;
     font-family: monospace;
