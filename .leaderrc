@@ -1,0 +1,5 @@
+{
+  "keys": {
+    "s": "make -C site server"
+  }
+}
