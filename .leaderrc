@@ -1,5 +1,13 @@
 {
   "keys": {
+    "s": {
+      "name": "shell",
+      "keys": {
+        "b": "SHELL=/bin/bash bash",
+        "z": "SHELL=/bin/zsh zsh",
+        "f": "SHELL=/usr/bin/fish fish"
+      }
+    },
     "g": {
       "name": "go",
       "loopingKeys": ["t"],
