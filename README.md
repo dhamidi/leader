@@ -20,7 +20,7 @@ Add the following to your `~/.bashrc` or `~/.zshrc`:
 eval "$(leader init)"
 ```
 
-This installs leader and binds it to `\`.
+This installs leader and binds it to <kbd>\\</kbd>.
 
 ## fish
 
@@ -32,7 +32,7 @@ leader init | source
 
 This installs leader into fish and binds it to <kbd>\\</kbd>.
 Additionally it binds <kbd>Ctrl+V</kbd> to switch to a new mode in which every key is bound to `self-insert`.
-This means you can press <kbd>Ctrl+V</kbd><kbd>\</kbd> to insert a literal `\`.
+This means you can press <kbd>Ctrl+V</kbd><kbd>\\</kbd> to insert a literal `\`.
 
 # Configuration
 
