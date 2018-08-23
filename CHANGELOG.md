@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 For upcoming features, improvements and ideas please refer to [TODO].
 
+## [Unreleased]
+
+### Added
+
+- Improved fish support: <kbd>Ctrl+V</kbd><kbd>\\</kbd> inserts a literal `\`, like in `bash` and `zsh`.
+
 ## [v0.2.0]
 
 ### Added
