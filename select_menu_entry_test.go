@@ -166,24 +166,24 @@ func TestSelectMenuEntry_Execute_erases_the_current_menu_before_running_a_comman
 	selectMenuEntry.Execute()
 
 	expectedViews := []main.View{
-		main.NewBreadcrumbsView([]string{"root"}),
-		main.NewMenuView([]*main.MenuEntry{
-			{Key: 'a', Label: "b"},
-		}),
-		main.NewBreadcrumbsView([]string{"root", "b"}),
-		main.NewMenuView([]*main.MenuEntry{
-			{Key: 'b', Label: ""},
-		}),
+		main.NewVerticalBoxView(
+			main.NewBreadcrumbsView([]string{"root"}),
+			main.NewMenuView([]*main.MenuEntry{
+				{Key: 'a', Label: "b"},
+			}),
+		),
+		main.NewVerticalBoxView(
+			main.NewBreadcrumbsView([]string{"root", "b"}),
+			main.NewMenuView([]*main.MenuEntry{
+				{Key: 'b', Label: ""},
+			}),
+		),
 	}
 	outputBuffer := bytes.NewBufferString("")
 	expectedViews[0].Render(outputBuffer)
-	expectedViews[1].Render(outputBuffer)
 	expectedViews[0].Erase(outputBuffer)
+	expectedViews[1].Render(outputBuffer)
 	expectedViews[1].Erase(outputBuffer)
-	expectedViews[2].Render(outputBuffer)
-	expectedViews[3].Render(outputBuffer)
-	expectedViews[2].Erase(outputBuffer)
-	expectedViews[3].Erase(outputBuffer)
 
 	assert.True(t, bytes.Contains(output.Bytes(), outputBuffer.Bytes()),
 		"output %q does not contain instructions %q", output, outputBuffer)

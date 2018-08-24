@@ -22,21 +22,16 @@ func NewSelectMenuEntry(ctx *Context) *SelectMenuEntry {
 // Execute runs this command.
 func (cmd *SelectMenuEntry) Execute() error {
 	for {
-		breadcrumbs, err := cmd.displayBreadcrumbs()
+		view, err := cmd.display()
 		if err != nil {
-			return err
-		}
-		menu, err := cmd.displayMenu()
-		if err != nil {
-			return err
+			return fmt.Errorf("SelectMenuEntry: display: %s", err)
 		}
 		key, err := cmd.Terminal.ReadKey()
 		if err != nil {
 			return fmt.Errorf("SelectMenuEntry: %s", err)
 		}
 		if cmd.isGoBackKey(key) {
-			menu.Erase(cmd.Terminal)
-			breadcrumbs.Erase(cmd.Terminal)
+			view.Erase(cmd.Terminal)
 			NewGoBack(cmd.Context).Execute()
 			continue
 		}
@@ -46,10 +41,7 @@ func (cmd *SelectMenuEntry) Execute() error {
 		}
 		binding := cmd.CurrentKeyMap.LookupKey(key)
 		cmd.PushKey(key)
-		if err := breadcrumbs.Erase(cmd.Terminal); err != nil {
-			return err
-		}
-		if err := menu.Erase(cmd.Terminal); err != nil {
+		if err := view.Erase(cmd.Terminal); err != nil {
 			return err
 		}
 		if binding.HasChildren() {
@@ -73,26 +65,36 @@ func (cmd *SelectMenuEntry) Execute() error {
 	}
 }
 
-// displayMenu displays a menu for the current keymap
-func (cmd *SelectMenuEntry) displayMenu() (*MenuView, error) {
+// display builds the view to display before asking for input and renders it on the terminal
+func (cmd *SelectMenuEntry) display() (View, error) {
+	view := NewVerticalBoxView(
+		cmd.displayBreadcrumbs(),
+		cmd.displayMenu(),
+	)
+
+	return view, view.Render(cmd.Terminal)
+}
+
+// displayMenu builds the menu view for the currently selected keymap
+func (cmd *SelectMenuEntry) displayMenu() *MenuView {
 	menuEntries := []*MenuEntry{}
 	for _, binding := range cmd.CurrentKeyMap.Bindings() {
 		menuEntries = append(menuEntries, NewMenuEntryForKeyBinding(binding))
 	}
 
 	menu := NewMenuView(menuEntries)
-	return menu, menu.Render(cmd.Terminal)
+	return menu
 }
 
-// displayBreadcrumbs displays breadcrumbs for the path to the current key map.
-func (cmd *SelectMenuEntry) displayBreadcrumbs() (*BreadcrumbsView, error) {
+// displayBreadcrumbs builds the breadcrumbs view for the path to the current key map.
+func (cmd *SelectMenuEntry) displayBreadcrumbs() *BreadcrumbsView {
 	breadcrumbs := []string{}
 	for _, keymap := range cmd.History {
 		breadcrumbs = append(breadcrumbs, keymap.Name())
 	}
 	breadcrumbs = append(breadcrumbs, cmd.CurrentKeyMap.Name())
 	breadcrumbsView := NewBreadcrumbsView(breadcrumbs)
-	return breadcrumbsView, breadcrumbsView.Render(cmd.Terminal)
+	return breadcrumbsView
 }
 
 // isGoBackKey returns true if pressing key should go back in the menu history
