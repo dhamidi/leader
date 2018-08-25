@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -11,9 +12,9 @@ type Config struct {
 }
 
 type ConfigMap struct {
-	Name        *string
-	LoopingKeys []string
-	Keys        ConfigBindings
+	Name        *string        `json:"name,omitempty"`
+	LoopingKeys []string       `json:"loopingKeys,omitempty"`
+	Keys        ConfigBindings `json:"keys,omitempty"`
 }
 
 // KeyMapName returns a name suitable for use as the name of a key map.
@@ -32,6 +33,13 @@ type ConfigBindings map[string]*ConfigBinding
 type ConfigBinding struct {
 	ShellCommand *string
 	Child        *ConfigMap
+}
+
+func (b *ConfigBinding) MarshalJSON() ([]byte, error) {
+	if b.Child != nil {
+		return json.Marshal(*b.Child)
+	}
+	return json.Marshal(*b.ShellCommand)
 }
 
 func (b *ConfigBinding) UnmarshalJSON(data []byte) error {
@@ -62,6 +70,15 @@ func NewConfigMap(name string) *ConfigMap {
 	return &ConfigMap{
 		Name: &name,
 	}
+}
+
+func (cfg *Config) EncodeJSON(out io.Writer) error {
+	marshaled, err := json.MarshalIndent(cfg.Root, "", "  ")
+	if err != nil {
+		return err
+	}
+	_, err = io.Copy(out, bytes.NewBuffer(marshaled))
+	return err
 }
 
 func (cfg *Config) ParseJSON(in io.Reader) error {

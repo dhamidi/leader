@@ -2,7 +2,7 @@ package main
 
 // Context provides dependencies for running UI commands
 type Context struct {
-	Files         FileOpener
+	Files         FileSystem
 	Shell         Shell
 	Terminal      Terminal
 	CurrentKeyMap *KeyMap

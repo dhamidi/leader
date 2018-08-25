@@ -23,7 +23,6 @@ func TestLoadConfig_Execute_loads_less_specific_config_files_first(t *testing.T)
 	assert.Equal(t, "home", context.CurrentKeyMap.LookupKey('h').Description())
 	assert.Equal(t, "parent", context.CurrentKeyMap.LookupKey('p').Description())
 	assert.Equal(t, "child", context.CurrentKeyMap.LookupKey('c').Description())
-
 }
 
 func TestLoadConfig_Execute_tries_to_load_home_leaderrc_even_when_outside_of_home_directory(t *testing.T) {
