@@ -17,6 +17,30 @@ type ConfigMap struct {
 	Keys        ConfigBindings `json:"keys,omitempty"`
 }
 
+// FindOrAdd returns the config map associated with key in Keys.
+//
+// If no ConfigMap exists under the given key, a new anonymous
+// ConfigMap is inserted and returned.
+//
+// If the binding at key does not refer to a ConfigMap, a new
+// ConfigMap is constructed which overrides the existing binding.
+func (c *ConfigMap) FindOrAdd(key string) *ConfigMap {
+	binding, found := c.Keys[key]
+	if !found {
+		c.Keys[key] = &ConfigBinding{}
+		binding = c.Keys[key]
+	}
+
+	if binding.Child == nil {
+		binding.ShellCommand = nil
+		binding.Child = &ConfigMap{
+			Keys: ConfigBindings{},
+		}
+	}
+
+	return binding.Child
+}
+
 // KeyMapName returns a name suitable for use as the name of a key map.
 func (c *ConfigMap) KeyMapName() string {
 	if c.Name == nil {

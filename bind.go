@@ -33,7 +33,11 @@ func (cmd *Bind) Execute() error {
 		return fmt.Errorf("Bind: parse config file: %s", err)
 	}
 	closeIfPossible(configFile)
-	config.Root.Keys[cmd.key[0:1]] = &ConfigBinding{
+	currentConfigMap := config.Root
+	for i := 0; i < len(cmd.key)-1; i++ {
+		currentConfigMap = currentConfigMap.FindOrAdd(cmd.key[i : i+1])
+	}
+	currentConfigMap.Keys[cmd.key[0:1]] = &ConfigBinding{
 		ShellCommand: &cmd.boundCommand,
 	}
 
