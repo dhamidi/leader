@@ -164,7 +164,6 @@ func initShell(context *Context) {
 
 func bind(context *Context, args []string) {
 	isGlobal := false
-	fmt.Fprintf(os.Stderr, "DEBUG: %#v\n", args)
 	for i, arg := range args {
 		if len(arg) < 1 || arg[0] != '-' {
 			break
