@@ -125,6 +125,7 @@ func parseArgs(context *Context, args []string) {
 
 func navigateTo(context *Context, path []rune) {
 	for _, keyRune := range path {
+		context.KeyPath = append(context.KeyPath, keyRune)
 		binding := context.CurrentKeyMap.LookupKey(keyRune)
 		if binding == UnboundKey {
 			os.Exit(1)
@@ -136,7 +137,6 @@ func navigateTo(context *Context, path []rune) {
 			}
 			os.Exit(2)
 		}
-		context.KeyPath = append(context.KeyPath, keyRune)
 		context.Navigate(binding.Children())
 	}
 
@@ -164,20 +164,28 @@ func initShell(context *Context) {
 
 func bind(context *Context, args []string) {
 	isGlobal := false
-	for i, arg := range args {
+	isUnbind := false
+	skip := 0
+	for _, arg := range args {
 		if len(arg) < 1 || arg[0] != '-' {
 			break
 		}
 
 		if arg == "-g" || arg == "--global" {
 			isGlobal = true
-			if len(args) > i {
-				args = args[i+1:]
-			} else {
-				args = []string{}
-			}
-			break
+			skip++
+			continue
 		}
+		if arg == "-u" || arg == "--unbind" {
+			isUnbind = true
+			skip++
+			continue
+		}
+	}
+	if len(args) > skip {
+		args = args[skip:]
+	} else {
+		args = []string{}
 	}
 	usage := func() {
 		fmt.Fprintf(
@@ -187,19 +195,29 @@ func bind(context *Context, args []string) {
 		)
 		os.Exit(1)
 	}
-	if len(args) < 2 {
+	if len(args) < 2 && !isUnbind {
 		usage()
 	}
 	keyPath := strings.TrimSpace(args[0])
-	command := strings.TrimSpace(args[1])
+	command := ""
 
-	if keyPath == "" || command == "" {
+	if keyPath == "" {
 		usage()
+	}
+
+	if !isUnbind {
+		command = strings.TrimSpace(args[1])
+		if command == "" {
+			usage()
+		}
 	}
 
 	cmd := NewBind(context, keyPath, command)
 	if isGlobal {
 		cmd.SetGlobal(os.ExpandEnv("${HOME}/.leaderrc"))
+	}
+	if isUnbind {
+		cmd.Unbind()
 	}
 	context.ErrorLogger.Print(cmd.Execute())
 }

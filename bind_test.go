@@ -58,7 +58,7 @@ func TestBind_Execute_writes_to_home_leaderrc_if_option_global_is_given(t *testi
 	context := newTestContextForConfig(t)
 	defineTestFile(context, homeRCPath, homeRC)
 
-	main.NewBind(context, "cc", "bind").
+	main.NewBind(context, "cd", "bind").
 		SetGlobal(homeRCPath).
 		Execute()
 	expectedConfig, _ := json.MarshalIndent(map[string]interface{}{
@@ -66,12 +66,30 @@ func TestBind_Execute_writes_to_home_leaderrc_if_option_global_is_given(t *testi
 			"h": "home",
 			"c": map[string]interface{}{
 				"keys": map[string]interface{}{
-					"c": "bind",
+					"d": "bind",
 				},
 			},
 		},
 	}, "", "  ")
 	configFile, err := context.Files.Open(homeRCPath)
+	assert.NoError(t, err)
+	actualConfig, _ := ioutil.ReadAll(configFile)
+	assert.Equal(t, string(expectedConfig), string(actualConfig))
+
+}
+
+func TestBind_Execute_removes_binding_if_unbind_option_is_set(t *testing.T) {
+	childRC := `{"keys": {"h": "home", "c": "child"}}`
+	context := newTestContextForConfig(t)
+	defineTestFile(context, ".leaderrc", childRC)
+
+	main.NewBind(context, "c", "").Unbind().Execute()
+	expectedConfig, _ := json.MarshalIndent(map[string]interface{}{
+		"keys": map[string]interface{}{
+			"h": "home",
+		},
+	}, "", "  ")
+	configFile, err := context.Files.Open(".leaderrc")
 	assert.NoError(t, err)
 	actualConfig, _ := ioutil.ReadAll(configFile)
 	assert.Equal(t, string(expectedConfig), string(actualConfig))

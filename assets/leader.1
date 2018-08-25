@@ -4,7 +4,7 @@ leader \- interactive command launcher
 .SH SYNOPSIS
 .nf
 \fBleader\fP [\fI@KEYS\fR]
-\fBleader\fR bind [\fI-g\fR|\fI--global] \fIKEYS\fR \fICOMMAND\fR
+\fBleader\fR bind [\fI-u\fR|\fI--unbind\fR] [\fI-g\fR|\fI--global] \fIKEYS\fR \fICOMMAND\fR
 \fBleader\fP print [\fI@KEYS\fR]
 \fBleader\fP list-keys
 \fBleader\fP init
@@ -26,7 +26,7 @@ The shell functions that are installed by leader detect this condition and inser
 \fBleader\fR
 launches the interactive menu and runs the selected command in a new shell.
 .TP
-\fBleader\fR bind [\fI-g\fR|\fI--global] \fIKEYS\fR \fICOMMAND\fR
+\fBleader\fR bind [\fI-u\fR|\fI--unbind\fR] [\fI-g\fR|\fI--global] \fIKEYS\fR \fICOMMAND\fR
 Adds a binding to invoke \fICOMMAND\fR when \fIKEYS\fR are pressed.
 Modifies the \fB.leaderrc\fR in the current directory.
 Existing keybindings are overridden.
@@ -60,6 +60,9 @@ For example, running \fIleader @t\fR is the same as running \fIleader\fR and pre
 .TP
 \fI-g\fR, \fI--global\fR
 If \fI-g\fR or \fI--global\fR is specified, \fBleader bind\fR adds a binding to \fB~/.leaderrc\fR instead of \fB.leaderrc\fR.
+.TP
+\fI-u\fR, \fI--unbind\fR
+If \fI-u\fR or \fI--unbind\fR is specified, \fBleader bind\fR removes the binding for the given key.  In case of a nested binding, empty intermediate key maps are not deleted.
 .SH KEY BINDINGS
 .PP
 Key bindings are configured in \fB.leaderrc\fR (see \fIFILES\fR).

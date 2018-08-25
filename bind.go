@@ -8,6 +8,7 @@ type Bind struct {
 	key          string
 	boundCommand string
 	file         string
+	unbind       bool
 }
 
 // NewBind creates a new bind command to bind key to boundCommand.
@@ -17,7 +18,14 @@ func NewBind(context *Context, key string, boundCommand string) *Bind {
 		key:          key,
 		boundCommand: boundCommand,
 		file:         ".leaderrc",
+		unbind:       false,
 	}
+}
+
+// Unbind tells this instance to remove a binding instead of setting it.
+func (cmd *Bind) Unbind() *Bind {
+	cmd.unbind = true
+	return cmd
 }
 
 // SetGlobal configures this command instance to write to the global configuration file at path.
@@ -42,11 +50,22 @@ func (cmd *Bind) Execute() error {
 	}
 	closeIfPossible(configFile)
 	currentConfigMap := config.Root
-	for i := 0; i < len(cmd.key)-1; i++ {
-		currentConfigMap = currentConfigMap.FindOrAdd(cmd.key[i : i+1])
-	}
-	currentConfigMap.Keys[cmd.key[0:1]] = &ConfigBinding{
-		ShellCommand: &cmd.boundCommand,
+	if cmd.unbind {
+		for i := 0; i < len(cmd.key)-1; i++ {
+			next := currentConfigMap.Keys[string([]rune{rune(cmd.key[i])})]
+			if next.Child == nil && i < len(cmd.key)-1 {
+				return nil
+			}
+			currentConfigMap = next.Child
+		}
+		delete(currentConfigMap.Keys, cmd.key[len(cmd.key)-1:])
+	} else {
+		for i := 0; i < len(cmd.key)-1; i++ {
+			currentConfigMap = currentConfigMap.FindOrAdd(cmd.key[i : i+1])
+		}
+		currentConfigMap.Keys[cmd.key[len(cmd.key)-1:]] = &ConfigBinding{
+			ShellCommand: &cmd.boundCommand,
+		}
 	}
 
 	tmpFile := cmd.file + "~"

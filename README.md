@@ -71,12 +71,17 @@ As this example shows, key maps can be nested to arbitrary depth.
 
 A keymap's `name` is used to as a label to indicate which keymap the user is currently in when running `leader`.
 
-New bindings can be added through the `bind` subcommand as well:
+New bindings can be added and removed through the `bind` subcommand as well:
 
 ```
 $ leader bind --global d date
 $ grep '"d"' ~/.leaderrc
   "d": "date",
+$ leader @d
+Sat Aug 25 21:06:04 EEST 2018
+$ leader bind --unbind --global d
+$ leader @d
+$
 ```
 
 ## Looping keys

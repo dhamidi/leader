@@ -12,6 +12,11 @@ For upcoming features, improvements and ideas please refer to [TODO].
 
 - Improved fish support: <kbd>Ctrl+V</kbd><kbd>\\</kbd> inserts a literal `\`, like in `bash` and `zsh`.
 - Added `leader bind` to add new key bindings without invoking an editor
+- Added `leader bind --unbind` to remove key bindings without invoking an editor
+
+### Fixed
+
+- Unknown command line arguments now cause `leader` to exit and display a message about where to get help.
 
 ## [v0.2.0]
 
