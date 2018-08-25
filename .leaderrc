@@ -1,20 +1,22 @@
 {
   "keys": {
-    "s": {
-      "name": "shell",
-      "keys": {
-        "b": "SHELL=/bin/bash bash",
-        "z": "SHELL=/bin/zsh zsh",
-        "f": "SHELL=/usr/bin/fish fish"
-      }
-    },
     "g": {
       "name": "go",
-      "loopingKeys": ["t"],
+      "loopingKeys": [
+        "t"
+      ],
       "keys": {
         "b": "go build .",
         "i": "make install",
         "t": "go test ."
+      }
+    },
+    "s": {
+      "name": "shell",
+      "keys": {
+        "b": "SHELL=/bin/bash bash",
+        "f": "SHELL=/usr/bin/fish fish",
+        "z": "SHELL=/bin/zsh zsh"
       }
     }
   }

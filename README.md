@@ -71,6 +71,13 @@ As this example shows, key maps can be nested to arbitrary depth.
 
 A keymap's `name` is used to as a label to indicate which keymap the user is currently in when running `leader`.
 
+New bindings can be added through the `bind` subcommand as well:
+
+```
+$ leader bind --global d date
+$ grep '"d"' ~/.leaderrc
+  "d": "date",
+```
 
 ## Looping keys
 
@@ -85,12 +92,13 @@ The closer a file is to your working directory, the more important keybindings i
 # Usage
 
 ```
-leader                # run commands in a new shell through an interactive menu
-leader print          # show interactive menu, but print commands instead of running them
-leader list-keys      # list all key bindings
-leader init           # print shell initialization code for $SHELL
-leader help           # display leader's man page
-leader version        # display the current version of leader
+leader                   # run commands in a new shell through an interactive menu
+leader bind KEYS COMMAND # bind KEYS to run COMMAND in the current directory
+leader print             # show interactive menu, but print commands instead of running them
+leader list-keys         # list all key bindings
+leader init              # print shell initialization code for $SHELL
+leader help              # display leader's man page
+leader version           # display the current version of leader
 ```
 
 # Key bindings

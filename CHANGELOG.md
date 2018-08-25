@@ -11,6 +11,7 @@ For upcoming features, improvements and ideas please refer to [TODO].
 ### Added
 
 - Improved fish support: <kbd>Ctrl+V</kbd><kbd>\\</kbd> inserts a literal `\`, like in `bash` and `zsh`.
+- Added `leader bind` to add new key bindings without invoking an editor
 
 ## [v0.2.0]
 

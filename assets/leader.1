@@ -4,6 +4,7 @@ leader \- interactive command launcher
 .SH SYNOPSIS
 .nf
 \fBleader\fP [\fI@KEYS\fR]
+\fBleader\fR bind [\fI-g\fR|\fI--global] \fIKEYS\fR \fICOMMAND\fR
 \fBleader\fP print [\fI@KEYS\fR]
 \fBleader\fP list-keys
 \fBleader\fP init
@@ -24,6 +25,11 @@ The shell functions that are installed by leader detect this condition and inser
 .TP
 \fBleader\fR
 launches the interactive menu and runs the selected command in a new shell.
+.TP
+\fBleader\fR bind [\fI-g\fR|\fI--global] \fIKEYS\fR \fICOMMAND\fR
+Adds a binding to invoke \fICOMMAND\fR when \fIKEYS\fR are pressed.
+Modifies the \fB.leaderrc\fR in the current directory.
+Existing keybindings are overridden.
 .TP
 \fBleader\fR print
 also launches the interactive menu, but instead of running a command it prints the shell command that needs to run in order to launch the selected command.   This is useful for running commands in the context of the current shell.
@@ -51,6 +57,9 @@ displays the current version of leader
 \fB@\fR[\fIKEYS\fR]
 If \fIKEYS\fR is provided, leader starts the menu at the position of \fIKEYS\fR as if the user had pressed those keys.
 For example, running \fIleader @t\fR is the same as running \fIleader\fR and pressing \fIt\fR.
+.TP
+\fI-g\fR, \fI--global\fR
+If \fI-g\fR or \fI--global\fR is specified, \fBleader bind\fR adds a binding to \fB~/.leaderrc\fR instead of \fB.leaderrc\fR.
 .SH KEY BINDINGS
 .PP
 Key bindings are configured in \fB.leaderrc\fR (see \fIFILES\fR).
@@ -71,6 +80,9 @@ Normal exit.
 .TP
 .B 1
 One of the keys passed with @\fIKEYS\fR is not bound to anything.
+.TP
+.PP
+A invalid subcommand or option was passed to leader.
 .TP
 .B 2
 One of the keys passed with @\fIKEYS\fR does not have any nested key bindings.

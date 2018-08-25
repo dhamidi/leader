@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"strings"
 
 	"github.com/gobuffalo/packr"
 )
@@ -88,6 +89,11 @@ func parseArgs(context *Context, args []string) {
 		os.Exit(0)
 	}
 
+	if args[1] == "bind" {
+		bind(context, args[2:])
+		os.Exit(0)
+	}
+
 	if args[1] == "version" {
 		showVersion()
 		os.Exit(0)
@@ -98,14 +104,22 @@ func parseArgs(context *Context, args []string) {
 		os.Exit(0)
 	}
 
-	for i := 0; i < len(args); i++ {
+	for i := 1; i < len(args); i++ {
 		if args[i] == "print" {
 			context.Executor = NewPrintingExecutor(context, os.Stdout)
 			continue
 		}
 		if args[i][0] == '@' {
 			navigateTo(context, []rune(args[i][1:]))
+			continue
 		}
+		fmt.Fprintf(
+			context.Terminal,
+			"unknown argument: %s\n\nRun\n\n  %s help\n\nfor more information\n",
+			args[i],
+			os.Args[0],
+		)
+		os.Exit(1)
 	}
 }
 
@@ -146,4 +160,47 @@ func showHelp(context *Context) {
 
 func initShell(context *Context) {
 	fmt.Printf("%s\n", context.Shell.Init())
+}
+
+func bind(context *Context, args []string) {
+	isGlobal := false
+	fmt.Fprintf(os.Stderr, "DEBUG: %#v\n", args)
+	for i, arg := range args {
+		if len(arg) < 1 || arg[0] != '-' {
+			break
+		}
+
+		if arg == "-g" || arg == "--global" {
+			isGlobal = true
+			if len(args) > i {
+				args = args[i+1:]
+			} else {
+				args = []string{}
+			}
+			break
+		}
+	}
+	usage := func() {
+		fmt.Fprintf(
+			context.Terminal,
+			"Usage: %s bind [-g|--global] KEYS COMMAND\n",
+			os.Args[0],
+		)
+		os.Exit(1)
+	}
+	if len(args) < 2 {
+		usage()
+	}
+	keyPath := strings.TrimSpace(args[0])
+	command := strings.TrimSpace(args[1])
+
+	if keyPath == "" || command == "" {
+		usage()
+	}
+
+	cmd := NewBind(context, keyPath, command)
+	if isGlobal {
+		cmd.SetGlobal(os.ExpandEnv("${HOME}/.leaderrc"))
+	}
+	context.ErrorLogger.Print(cmd.Execute())
 }
