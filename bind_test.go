@@ -3,6 +3,7 @@ package main_test
 import (
 	"encoding/json"
 	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/dhamidi/leader"
@@ -45,6 +46,32 @@ func TestBind_Execute_supports_nested_bindings(t *testing.T) {
 		},
 	}, "", "  ")
 	configFile, err := context.Files.Open(".leaderrc")
+	assert.NoError(t, err)
+	actualConfig, _ := ioutil.ReadAll(configFile)
+	assert.Equal(t, string(expectedConfig), string(actualConfig))
+
+}
+
+func TestBind_Execute_writes_to_home_leaderrc_if_option_global_is_given(t *testing.T) {
+	homeRCPath := os.ExpandEnv("${HOME}/.leaderrc")
+	homeRC := `{"keys": {"h": "home", "c": "child"}}`
+	context := newTestContextForConfig(t)
+	defineTestFile(context, homeRCPath, homeRC)
+
+	main.NewBind(context, "cc", "bind").
+		SetGlobal(homeRCPath).
+		Execute()
+	expectedConfig, _ := json.MarshalIndent(map[string]interface{}{
+		"keys": map[string]interface{}{
+			"h": "home",
+			"c": map[string]interface{}{
+				"keys": map[string]interface{}{
+					"c": "bind",
+				},
+			},
+		},
+	}, "", "  ")
+	configFile, err := context.Files.Open(homeRCPath)
 	assert.NoError(t, err)
 	actualConfig, _ := ioutil.ReadAll(configFile)
 	assert.Equal(t, string(expectedConfig), string(actualConfig))
