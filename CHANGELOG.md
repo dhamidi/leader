@@ -8,6 +8,12 @@ For upcoming features, improvements and ideas please refer to [TODO].
 
 ## [Unreleased]
 
+## [v0.3.1]
+
+### Fixed
+
+- The zsh prompt is redrawn after leader exits.  This fixes https://github.com/dhamidi/leader/issues/1
+
 ## [v0.3.0]
 
 ### Added
@@ -55,7 +61,8 @@ For upcoming features, improvements and ideas please refer to [TODO].
 ### Fixed
 - Fix configuration load order: project-local overrides were broken
 
-[Unreleased]: https://github.com/dhamidi/leader/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/dhamidi/leader/compare/v0.3.1...HEAD
+[v0.3.0]: https://github.com/dhamidi/leader/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://github.com/dhamidi/leader/compare/v0.2.0...v0.3.0
 [v0.2.0]: https://github.com/dhamidi/leader/compare/v0.1.5...v0.2.0
 [v0.1.5]: https://github.com/dhamidi/leader/compare/v0.1.4...v0.1.5
