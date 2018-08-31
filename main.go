@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"strings"
+	"syscall"
 
 	"github.com/gobuffalo/packr"
 )
@@ -44,6 +45,12 @@ func main() {
 		errorHandler.Fatal(err)
 	}
 
+	exitFn := func(exitCode int) {
+		tty.Restore()
+		os.Exit(exitCode)
+	}
+	signalHandler := SignalHandler(exitFn)
+
 	shell := NewShellFromEnv(os.Getenv)
 	line, cursor := shell.Commandline()
 	shellParser := NewShellParser()
@@ -62,9 +69,8 @@ func main() {
 		Shell:         shell,
 	}
 	go func() {
-		<-allSignals
-		tty.Restore()
-		os.Exit(0)
+		signal := <-allSignals
+		signalHandler(signal)
 	}()
 	loadConfig := NewLoadConfig(context, os.Getenv("PWD"), os.Getenv("HOME"))
 	errorHandler.Must(loadConfig.Execute)
@@ -72,6 +78,26 @@ func main() {
 	errorHandler.Must(tty.MakeRaw)
 	selectMenuEntry := NewSelectMenuEntry(context)
 	errorHandler.Print(selectMenuEntry.Execute())
+}
+
+// SignalHandler returns a function for handling signals.  All signals
+// received by the application are passed to this
+// function.
+//
+// exitFn is the function that should be invoked when the signal
+// handler has determined that the signal cannot be handled by the
+// application.  It is expected that exitFn calls os.Exit at some
+// point.  The argument passed to exitFn is the exit code that should
+// be used when calling os.Exit.
+func SignalHandler(exitFn func(int)) func(os.Signal) {
+	return func(signal os.Signal) {
+		switch signal {
+		case syscall.SIGWINCH:
+			return
+		default:
+			exitFn(0)
+		}
+	}
 }
 
 func parseArgs(context *Context, args []string) {

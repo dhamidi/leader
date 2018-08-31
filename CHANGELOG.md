@@ -10,7 +10,8 @@ For upcoming features, improvements and ideas please refer to [TODO].
 
 ### Fixed
 
-- `leader bind` exited with an error if no .leaderrc existed in the current directory.
+- `leader bind` now runs without error in directories without a `.leaderrc`
+- `leader` does not exit anymore when the size of the terminal changes
 
 ## [v0.3.1]
 
