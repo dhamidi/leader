@@ -122,3 +122,10 @@ The following key bindings are processed by `leader` itself and cannot be remapp
 # Execution environment
 
 All commands triggered by leader are run in the context of the current shell.  This means that `cd`, `pushd` and other commands that modify the state of the current shell work without problems in your `.leaderrc`.
+
+# Frequently Asked Questions
+
+<dl>
+  <dt>How can I bind keys only in a specific project?</dt>
+  <dd>Just create a `.leaderrc` in your project's root directory.  Leader will load that file after loading `~/.leaderrc` and merge any project specific settings into your configuration from `~/.leaderrc`.</dd>
+</dl>
