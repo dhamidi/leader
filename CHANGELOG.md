@@ -8,6 +8,8 @@ For upcoming features, improvements and ideas please refer to [TODO].
 
 ## [Unreleased]
 
+## [v0.3.2]
+
 ### Fixed
 
 - `leader bind` now runs without error in directories without a `.leaderrc`
@@ -66,8 +68,9 @@ For upcoming features, improvements and ideas please refer to [TODO].
 ### Fixed
 - Fix configuration load order: project-local overrides were broken
 
-[Unreleased]: https://github.com/dhamidi/leader/compare/v0.3.1...HEAD
-[v0.3.0]: https://github.com/dhamidi/leader/compare/v0.3.0...v0.3.1
+[Unreleased]: https://github.com/dhamidi/leader/compare/v0.3.2...HEAD
+[v0.3.2]: https://github.com/dhamidi/leader/compare/v0.3.1...v0.3.2
+[v0.3.1]: https://github.com/dhamidi/leader/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://github.com/dhamidi/leader/compare/v0.2.0...v0.3.0
 [v0.2.0]: https://github.com/dhamidi/leader/compare/v0.1.5...v0.2.0
 [v0.1.5]: https://github.com/dhamidi/leader/compare/v0.1.4...v0.1.5
