@@ -1,5 +1,32 @@
 # Features
 
+## Configuration setting: `"when": "some-condition"`
+
+**Status**: *open*
+
+**Goals**:
+- Unclutter menus by only showing actions that can actually be executed
+
+**Example applications**:
+- A user has bindings for working with `npm` in their `~/.leaderrc`.  However, not every project uses `npm`, so it would be great to save some visual space by only displaying entries for `npm` when a `package.json` exists in the current directory.
+
+**Example**:
+
+```
+{
+  "keys": {
+    "n": {
+      "when": "test -f package.json",
+      "name": "npm",
+      "keys": {
+        "i": "npm install",
+        "t": "npm run test"
+      }
+    }
+  }
+}
+```
+
 ## `leader import`
 
 **Status**: *open*
