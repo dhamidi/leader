@@ -8,6 +8,10 @@ For upcoming features, improvements and ideas please refer to [TODO].
 
 ## [Unreleased]
 
+### Fixed
+
+- `leader bind` exited with an error if no .leaderrc existed in the current directory.
+
 ## [v0.3.1]
 
 ### Fixed

@@ -93,6 +93,7 @@ func NewConfig() *Config {
 func NewConfigMap(name string) *ConfigMap {
 	return &ConfigMap{
 		Name: &name,
+		Keys: ConfigBindings{},
 	}
 }
 

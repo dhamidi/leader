@@ -10,6 +10,20 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestBind_Execute_creates_local_configuration_file_if_it_does_not_exist_yet(t *testing.T) {
+	context := newTestContextForConfig(t)
+	assert.NoError(t, main.NewBind(context, "d", "date").Execute())
+	expectedConfig, _ := json.MarshalIndent(map[string]interface{}{
+		"keys": map[string]interface{}{
+			"d": "date",
+		},
+	}, "", "  ")
+	configFile, err := context.Files.Open(".leaderrc")
+	assert.NoError(t, err)
+	actualConfig, _ := ioutil.ReadAll(configFile)
+	assert.Equal(t, string(expectedConfig), string(actualConfig))
+}
+
 func TestBind_Execute_adds_a_binding_to_local_configuration_by_default(t *testing.T) {
 	childRC := `{"keys": {"h": "home", "c": "child"}}`
 	context := newTestContextForConfig(t)

@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 // Bind adds a new key binding.
 type Bind struct {
@@ -38,17 +41,19 @@ func (cmd *Bind) SetGlobal(path string) *Bind {
 // this command to the leader configuration file in the current
 // directory.
 func (cmd *Bind) Execute() error {
-	configFile, err := cmd.Files.Open(cmd.file)
-	if err != nil {
-		return fmt.Errorf("Bind: open config file: %s", err)
-	}
-	defer closeIfPossible(configFile)
 	config := NewConfig()
 	config.Root.Name = nil
-	if err := config.ParseJSON(configFile); err != nil {
-		return fmt.Errorf("Bind: parse config file: %s", err)
+	configFile, err := cmd.Files.Open(cmd.file)
+	if !os.IsNotExist(err) {
+		if err != nil {
+			return fmt.Errorf("Bind: open config file: %s", err)
+		}
+		defer closeIfPossible(configFile)
+		if err := config.ParseJSON(configFile); err != nil {
+			return fmt.Errorf("Bind: parse config file: %s", err)
+		}
+		closeIfPossible(configFile)
 	}
-	closeIfPossible(configFile)
 	currentConfigMap := config.Root
 	if cmd.unbind {
 		for i := 0; i < len(cmd.key)-1; i++ {
